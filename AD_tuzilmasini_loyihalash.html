@@ -1,0 +1,1374 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Domen, oʻrmon va daraxt asosida AD tuzilmasini loyihalash</title>
+<style>
+:root{
+  --bg1:#0b1430; --bg2:#0a1026; --card:rgba(255,255,255,.055); --line:rgba(255,255,255,.12);
+  --txt:#e7ecff; --mut:#9aa7c7; --cy:#38bdf8; --bl:#3b82f6; --vi:#8b5cf6; --gr:#22c55e;
+  --am:#f59e0b; --pk:#ec4899; --rd:#ef4444;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:#050914;overflow:hidden;
+  font-family:"Segoe UI","Inter","Roboto","Helvetica Neue",Arial,sans-serif;color:var(--txt)}
+#stage{position:absolute;left:50%;top:50%;width:1280px;height:720px;transform-origin:center center;transform:translate(-50%,-50%)}
+.slide{position:absolute;inset:0;padding:48px 64px 60px;display:none;overflow:hidden;
+  background:
+    radial-gradient(900px 500px at 105% -10%,rgba(59,130,246,.22),transparent 60%),
+    radial-gradient(700px 420px at -10% 110%,rgba(139,92,246,.20),transparent 60%),
+    linear-gradient(135deg,var(--bg1),var(--bg2));
+  border-radius:6px}
+.slide.active{display:block;animation:fade .45s ease}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.slide::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);
+  background-size:40px 40px}
+.tag{display:inline-block;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--cy);
+  font-weight:600;margin-bottom:6px}
+h1{font-size:50px;line-height:1.12;margin:0 0 18px;font-weight:800}
+h2{font-size:34px;margin:0 0 6px;font-weight:750;letter-spacing:-.01em}
+h2::after{content:"";display:block;width:86px;height:4px;border-radius:4px;margin-top:10px;
+  background:linear-gradient(90deg,var(--cy),var(--vi))}
+h3{font-size:19px;margin:0 0 8px;color:#fff}
+p,li{font-size:17px;line-height:1.5;color:#d6ddf5}
+ul{margin:0;padding-left:20px} li{margin:4px 0}
+li::marker{color:var(--cy)}
+.mut{color:var(--mut)}
+.grad{background:linear-gradient(90deg,var(--cy),var(--vi) 60%,var(--pk));-webkit-background-clip:text;background-clip:text;color:transparent}
+.body{position:relative;margin-top:22px}
+.row{display:flex;gap:22px}
+.col{flex:1;min-width:0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 20px;position:relative}
+.card.acc{border-left:4px solid var(--cy)}
+.card .num{position:absolute;top:-12px;left:18px;background:linear-gradient(135deg,var(--bl),var(--vi));
+  color:#fff;font-weight:700;font-size:13px;padding:3px 10px;border-radius:20px}
+.pill{display:inline-block;padding:3px 11px;border-radius:20px;font-size:13px;font-weight:600;margin:2px 4px 2px 0;
+  background:rgba(56,189,248,.14);color:var(--cy);border:1px solid rgba(56,189,248,.35)}
+.pill.v{background:rgba(139,92,246,.15);color:#c4b5fd;border-color:rgba(139,92,246,.4)}
+.pill.g{background:rgba(34,197,94,.14);color:#86efac;border-color:rgba(34,197,94,.4)}
+.pill.a{background:rgba(245,158,11,.14);color:#fcd34d;border-color:rgba(245,158,11,.4)}
+.pill.r{background:rgba(239,68,68,.14);color:#fca5a5;border-color:rgba(239,68,68,.4)}
+table{border-collapse:separate;border-spacing:0;width:100%;font-size:15px;border-radius:14px;overflow:hidden;border:1px solid var(--line)}
+th{background:linear-gradient(90deg,rgba(59,130,246,.35),rgba(139,92,246,.35));color:#fff;text-align:left;padding:10px 12px;font-weight:650}
+td{padding:9px 12px;border-top:1px solid var(--line);color:#d6ddf5;background:rgba(255,255,255,.025);vertical-align:top}
+tr:nth-child(even) td{background:rgba(255,255,255,.05)}
+td b{color:#fff}
+pre{margin:0;background:#070b18;border:1px solid var(--line);border-radius:14px;padding:16px 18px 14px;
+  font-family:"Cascadia Code","Consolas","JetBrains Mono","Fira Code",monospace;font-size:14.2px;line-height:1.55;
+  color:#dbe4ff;white-space:pre;overflow:hidden;position:relative}
+pre .bar{display:flex;gap:7px;margin:-4px 0 10px;align-items:center}
+pre .bar i{width:11px;height:11px;border-radius:50%;display:inline-block}
+pre .bar i:nth-child(1){background:#ff5f57}pre .bar i:nth-child(2){background:#febc2e}pre .bar i:nth-child(3){background:#28c840}
+pre .bar span{margin-left:10px;font-size:12px;color:var(--mut);font-family:"Segoe UI",sans-serif}
+.k{color:#7dd3fc}.p{color:#c4b5fd}.s{color:#fcd34d}.c{color:#6b7a99;font-style:italic}.v{color:#f9a8d4}.o{color:#86efac}
+code{font-family:"Cascadia Code",Consolas,monospace;background:rgba(56,189,248,.12);color:#bae6fd;padding:1px 6px;border-radius:6px;font-size:.92em}
+.note{font-size:14.5px;color:var(--mut);border-left:3px solid var(--am);padding:6px 12px;background:rgba(245,158,11,.07);border-radius:0 10px 10px 0}
+.big{font-size:44px;font-weight:800;line-height:1}
+svg text{font-family:"Segoe UI",Arial,sans-serif}
+.foot{position:absolute;left:64px;right:64px;bottom:18px;display:flex;justify-content:space-between;
+  font-size:12.5px;color:#6f7ca0;letter-spacing:.04em}
+.foot b{color:var(--cy);font-weight:600}
+/* nav */
+#nav{position:fixed;right:18px;top:14px;display:flex;gap:8px;z-index:10;opacity:.35;transition:.2s}
+#nav:hover{opacity:1}
+#nav button{background:#111a36;border:1px solid #2a3866;color:#cfe;border-radius:10px;padding:7px 12px;cursor:pointer;font-size:14px}
+#progress{position:fixed;left:0;top:0;height:3px;background:linear-gradient(90deg,var(--cy),var(--vi));z-index:11;transition:width .3s}
+#help{position:fixed;left:50%;top:14px;transform:translateX(-50%);font-size:12px;color:#9aa7c7;z-index:10;background:#111a36;padding:6px 14px;border-radius:10px;transition:opacity 1s}
+@media print{
+  @page{size:1280px 720px;margin:0}
+  html,body{overflow:visible;background:none}
+  #stage{position:static;transform:none!important;width:1280px;height:auto}
+  .slide{display:block!important;position:relative;width:1280px;height:720px;page-break-after:always;break-after:page;border-radius:0;animation:none}
+  #nav,#progress,#help{display:none}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+
+<!-- Umumiy SVG ta'riflar -->
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <linearGradient id="gTri" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#60a5fa"/><stop offset="1" stop-color="#4f46e5"/>
+    </linearGradient>
+    <linearGradient id="gTri2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#c084fc"/><stop offset="1" stop-color="#7c3aed"/>
+    </linearGradient>
+    <linearGradient id="gTri3" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#4ade80"/><stop offset="1" stop-color="#059669"/>
+    </linearGradient>
+    <linearGradient id="gTri4" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fbbf24"/><stop offset="1" stop-color="#ea580c"/>
+    </linearGradient>
+    <linearGradient id="gBox" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1e3a8a"/><stop offset="1" stop-color="#312e81"/>
+    </linearGradient>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#7dd3fc"/>
+    </marker>
+    <marker id="arrA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#fbbf24"/>
+    </marker>
+    <marker id="arrP" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#f472b6"/>
+    </marker>
+    <marker id="arrG" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#4ade80"/>
+    </marker>
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000" flood-opacity=".45"/>
+    </filter>
+    <!-- Domen uchburchagi (AD an'anaviy belgisi) -->
+    <symbol id="tri" viewBox="0 0 120 100"><polygon points="60,4 116,96 4,96" fill="url(#gTri)" stroke="#93c5fd" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="tri2" viewBox="0 0 120 100"><polygon points="60,4 116,96 4,96" fill="url(#gTri2)" stroke="#d8b4fe" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="tri3" viewBox="0 0 120 100"><polygon points="60,4 116,96 4,96" fill="url(#gTri3)" stroke="#86efac" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="tri4" viewBox="0 0 120 100"><polygon points="60,4 116,96 4,96" fill="url(#gTri4)" stroke="#fde68a" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <!-- Server belgisi -->
+    <symbol id="srv" viewBox="0 0 40 50">
+      <rect x="2" y="2" width="36" height="46" rx="5" fill="#0f172a" stroke="#60a5fa" stroke-width="2"/>
+      <rect x="8" y="9" width="24" height="5" rx="2" fill="#38bdf8"/><rect x="8" y="19" width="24" height="5" rx="2" fill="#38bdf8" opacity=".6"/>
+      <rect x="8" y="29" width="24" height="5" rx="2" fill="#38bdf8" opacity=".35"/><circle cx="30" cy="41" r="2.5" fill="#22c55e"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div id="stage">
+
+<!-- ===================== 1. TITUL ===================== -->
+<section class="slide" data-nofoot>
+  <div style="position:absolute;left:64px;top:110px;width:640px">
+    <div class="tag">Windows Server boshqaruvi · Mustaqil ish / Taqdimot</div>
+    <h1>Domen, <span class="grad">oʻrmon</span> va <span class="grad">daraxt</span> tushunchalari asosida AD tuzilmasini loyihalash</h1>
+    <p class="mut" style="font-size:19px;margin:0 0 34px">Active Directory Domain Services (AD DS): mantiqiy tuzilma, ishonch munosabatlari, FSMO rollari, OU dizayni va PowerShell orqali amaliy joriy etish</p>
+    <div class="row" style="gap:14px;max-width:600px">
+      <div class="card" style="padding:12px 18px"><div class="mut" style="font-size:12px">Bajardi</div><div style="font-size:18px;font-weight:700">Tolibjon Karimov</div></div>
+      <div class="card" style="padding:12px 18px"><div class="mut" style="font-size:12px">Guruh</div><div style="font-size:18px;font-weight:700">315-guruh</div></div>
+    </div>
+    <p class="mut" style="font-size:14px;margin-top:26px">2026-yil</p>
+  </div>
+  <svg style="position:absolute;right:30px;top:90px" width="520" height="540" viewBox="0 0 520 540">
+    <ellipse cx="260" cy="290" rx="245" ry="230" fill="rgba(56,189,248,.06)" stroke="#38bdf8" stroke-dasharray="8 8" stroke-width="2"/>
+    <text x="260" y="88" text-anchor="middle" fill="#7dd3fc" font-size="16" font-weight="700" letter-spacing="3">OʻRMON (FOREST)</text>
+    <g stroke="#7dd3fc" stroke-width="2.5" opacity=".8">
+      <line x1="170" y1="200" x2="110" y2="300"/><line x1="170" y1="200" x2="230" y2="300"/>
+      <line x1="370" y1="220" x2="370" y2="320"/><line x1="230" y1="340" x2="230" y2="410"/>
+    </g>
+    <line x1="215" y1="170" x2="325" y2="185" stroke="#f472b6" stroke-width="3" stroke-dasharray="6 5" marker-end="url(#arrP)" marker-start="url(#arrP)"/>
+    <use href="#tri" x="110" y="120" width="120" height="100" filter="url(#glow)"/>
+    <use href="#tri2" x="310" y="140" width="120" height="100" filter="url(#glow)"/>
+    <use href="#tri" x="60" y="270" width="100" height="84"/>
+    <use href="#tri" x="180" y="270" width="100" height="84"/>
+    <use href="#tri2" x="320" y="290" width="100" height="84"/>
+    <use href="#tri" x="190" y="390" width="80" height="68"/>
+    <g fill="#fff" font-size="13" font-weight="600" text-anchor="middle">
+      <text x="170" y="205">uztech.uz</text><text x="370" y="225">uzbank.uz</text>
+      <text x="110" y="347" font-size="11">tsh.uztech.uz</text><text x="230" y="347" font-size="11">sam.uztech.uz</text>
+      <text x="370" y="367" font-size="11">krd.uzbank.uz</text><text x="230" y="452" font-size="10">urg.sam…</text>
+    </g>
+    <text x="270" y="160" fill="#f9a8d4" font-size="11" text-anchor="middle">tree-root trust</text>
+  </svg>
+</section>
+
+<!-- ===================== 2. REJA ===================== -->
+<section class="slide">
+  <div class="tag">Mundarija</div>
+  <h2>Taqdimot rejasi</h2>
+  <div class="body row" style="gap:18px;margin-top:30px">
+    <div class="col">
+      <div class="card acc" style="margin-bottom:14px"><h3>1. Nazariy asoslar</h3><p style="margin:0" class="mut">AD DS nima, mantiqiy va fizik tuzilma, ierarxiya</p></div>
+      <div class="card acc" style="margin-bottom:14px;border-left-color:#8b5cf6"><h3>2. Domen · Daraxt · Oʻrmon</h3><p style="margin:0" class="mut">Nomlash, DC, NTDS.dit, SYSVOL, chegaralar</p></div>
+      <div class="card acc" style="border-left-color:#22c55e"><h3>3. Ishonch va rollar</h3><p style="margin:0" class="mut">Trust turlari, FSMO, Global Catalog, sxema, funksional darajalar</p></div>
+    </div>
+    <div class="col">
+      <div class="card acc" style="margin-bottom:14px;border-left-color:#f59e0b"><h3>4. Loyihalash metodologiyasi</h3><p style="margin:0" class="mut">Oʻrmon, domen va OU dizayn modellari, saytlar</p></div>
+      <div class="card acc" style="margin-bottom:14px;border-left-color:#ec4899"><h3>5. Amaliy keys: «UzTech Group»</h3><p style="margin:0" class="mut">Talablar » yechim » OU tuzilmasi » replikatsiya</p></div>
+      <div class="card acc" style="border-left-color:#ef4444"><h3>6. PowerShell va xavfsizlik</h3><p style="margin:0" class="mut">Joriy etish skriptlari, tekshirish, Tier modeli, xulosa</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 3. AD DS NIMA ===================== -->
+<section class="slide">
+  <div class="tag">01 · Kirish</div>
+  <h2>Active Directory Domain Services nima?</h2>
+  <div class="body row">
+    <div class="col" style="flex:1.15">
+      <p><b>AD DS</b> — Microsoft tomonidan ishlab chiqilgan <b>katalog xizmati</b> boʻlib, tarmoqdagi obyektlar (foydalanuvchi, kompyuter, guruh, printer) haqidagi maʼlumotni ierarxik bazada saqlaydi va ularga markazlashgan holda <b>autentifikatsiya</b> hamda <b>avtorizatsiya</b>ni taʼminlaydi.</p>
+      <ul>
+        <li>Birinchi marta <b>Windows 2000 Server</b> bilan taqdim etilgan</li>
+        <li>Protokollar: <code>LDAP</code> (389/636), <code>Kerberos v5</code> (88), <code>DNS</code> (53), <code>SMB</code> (445), <code>RPC</code> (135)</li>
+        <li>Standart: X.500 katalog modeliga asoslangan</li>
+        <li>Joylashuv xizmati sifatida <b>DNS</b>ga toʻliq tayanadi (SRV yozuvlar)</li>
+        <li>Guruh siyosati (GPO) orqali minglab kompyuterni markaziy boshqarish</li>
+      </ul>
+    </div>
+    <div class="col">
+      <svg width="100%" height="430" viewBox="0 0 500 430">
+        <circle cx="250" cy="210" r="78" fill="url(#gBox)" stroke="#60a5fa" stroke-width="3" filter="url(#glow)"/>
+        <text x="250" y="204" text-anchor="middle" fill="#fff" font-size="26" font-weight="800">AD DS</text>
+        <text x="250" y="228" text-anchor="middle" fill="#93c5fd" font-size="13">katalog xizmati</text>
+        <g font-size="14" font-weight="600" text-anchor="middle">
+          <g><rect x="180" y="18" width="140" height="44" rx="12" fill="#0f172a" stroke="#38bdf8"/><text x="250" y="46" fill="#7dd3fc">Autentifikatsiya</text></g>
+          <g><rect x="360" y="110" width="130" height="44" rx="12" fill="#0f172a" stroke="#8b5cf6"/><text x="425" y="138" fill="#c4b5fd">Avtorizatsiya</text></g>
+          <g><rect x="360" y="270" width="130" height="44" rx="12" fill="#0f172a" stroke="#22c55e"/><text x="425" y="298" fill="#86efac">Group Policy</text></g>
+          <g><rect x="180" y="360" width="140" height="44" rx="12" fill="#0f172a" stroke="#f59e0b"/><text x="250" y="388" fill="#fcd34d">Replikatsiya</text></g>
+          <g><rect x="10" y="270" width="130" height="44" rx="12" fill="#0f172a" stroke="#ec4899"/><text x="75" y="298" fill="#f9a8d4">DNS integratsiya</text></g>
+          <g><rect x="10" y="110" width="130" height="44" rx="12" fill="#0f172a" stroke="#ef4444"/><text x="75" y="138" fill="#fca5a5">LDAP qidiruv</text></g>
+        </g>
+        <g stroke="#3b4a7a" stroke-width="2">
+          <line x1="250" y1="62" x2="250" y2="132"/><line x1="360" y1="140" x2="318" y2="175"/><line x1="360" y1="285" x2="318" y2="248"/>
+          <line x1="250" y1="360" x2="250" y2="288"/><line x1="140" y1="285" x2="182" y2="248"/><line x1="140" y1="140" x2="182" y2="175"/>
+        </g>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 4. MANTIQIY VA FIZIK ===================== -->
+<section class="slide">
+  <div class="tag">01 · Kirish</div>
+  <h2>AD tuzilmasi: mantiqiy va fizik qatlam</h2>
+  <div class="body row">
+    <div class="col card" style="border-top:4px solid var(--cy)">
+      <h3 style="color:#7dd3fc">Mantiqiy tuzilma — <span class="mut" style="font-weight:400">«nima va kim»</span></h3>
+      <p class="mut" style="margin-top:0">Tashkilotning maʼmuriy modeli. Tarmoq topologiyasiga bogʻliq emas.</p>
+      <table>
+        <tr><th>Komponent</th><th>Vazifasi</th></tr>
+        <tr><td><b>Oʻrmon</b> (Forest)</td><td>Eng yuqori konteyner, xavfsizlik chegarasi</td></tr>
+        <tr><td><b>Daraxt</b> (Tree)</td><td>Uzluksiz DNS nomlar fazosiga ega domenlar</td></tr>
+        <tr><td><b>Domen</b> (Domain)</td><td>Maʼmuriy va replikatsiya birligi</td></tr>
+        <tr><td><b>OU</b></td><td>Vakolat berish va GPO qoʻllash konteyneri</td></tr>
+        <tr><td><b>Obyektlar</b></td><td>User, Computer, Group, Contact…</td></tr>
+      </table>
+    </div>
+    <div class="col card" style="border-top:4px solid var(--vi)">
+      <h3 style="color:#c4b5fd">Fizik tuzilma — <span class="mut" style="font-weight:400">«qayerda va qanday»</span></h3>
+      <p class="mut" style="margin-top:0">Tarmoq infratuzilmasi: replikatsiya va kirish trafigini boshqaradi.</p>
+      <table>
+        <tr><th>Komponent</th><th>Vazifasi</th></tr>
+        <tr><td><b>Domain Controller</b></td><td>AD bazasi nusxasini saqlovchi server</td></tr>
+        <tr><td><b>Sayt</b> (Site)</td><td>Tez ulangan IP-subnetlar toʻplami</td></tr>
+        <tr><td><b>Subnet</b></td><td>Klientni eng yaqin DC ga yoʻnaltiradi</td></tr>
+        <tr><td><b>Site Link</b></td><td>Saytlararo replikatsiya yoʻli va narxi</td></tr>
+        <tr><td><b>Bridgehead</b></td><td>Saytlararo replikatsiya serveri</td></tr>
+      </table>
+    </div>
+  </div>
+  <p class="note" style="margin-top:18px">Muhim: bitta domen bir nechta saytda, bitta saytda esa bir nechta domen DC lari boʻlishi mumkin — ikki qatlam bir-biridan mustaqil loyihalanadi.</p>
+</section>
+
+<!-- ===================== 5. IERARXIYA ===================== -->
+<section class="slide">
+  <div class="tag">01 · Kirish</div>
+  <h2>Mantiqiy ierarxiya: oʻrmondan obyektgacha</h2>
+  <div class="body row" style="align-items:center">
+    <svg width="660" height="520" viewBox="0 0 660 520">
+      <rect x="5" y="5" width="650" height="505" rx="26" fill="rgba(56,189,248,.06)" stroke="#38bdf8" stroke-width="2.5"/>
+      <text x="28" y="38" fill="#7dd3fc" font-size="20" font-weight="800">OʻRMON · Forest</text>
+      <text x="630" y="38" fill="#7dd3fc" font-size="13" text-anchor="end">umumiy sxema, konfiguratsiya, GC</text>
+      <rect x="30" y="58" width="600" height="430" rx="22" fill="rgba(139,92,246,.08)" stroke="#8b5cf6" stroke-width="2.5"/>
+      <text x="52" y="90" fill="#c4b5fd" font-size="19" font-weight="800">DARAXT · Tree</text>
+      <text x="610" y="90" fill="#c4b5fd" font-size="13" text-anchor="end">uzluksiz DNS nomlar fazosi</text>
+      <rect x="55" y="108" width="550" height="355" rx="20" fill="rgba(34,197,94,.08)" stroke="#22c55e" stroke-width="2.5"/>
+      <text x="77" y="140" fill="#86efac" font-size="18" font-weight="800">DOMEN · Domain</text>
+      <text x="585" y="140" fill="#86efac" font-size="13" text-anchor="end">uztech.uz</text>
+      <rect x="80" y="158" width="500" height="280" rx="18" fill="rgba(245,158,11,.08)" stroke="#f59e0b" stroke-width="2.5"/>
+      <text x="102" y="190" fill="#fcd34d" font-size="17" font-weight="800">OU · Organizational Unit</text>
+      <text x="560" y="190" fill="#fcd34d" font-size="13" text-anchor="end">OU=IT</text>
+      <rect x="105" y="208" width="450" height="205" rx="16" fill="rgba(236,72,153,.08)" stroke="#ec4899" stroke-width="2.5"/>
+      <text x="127" y="240" fill="#f9a8d4" font-size="16" font-weight="800">OBYEKTLAR</text>
+      <g font-size="14" font-weight="600" text-anchor="middle">
+        <rect x="130" y="262" width="125" height="58" rx="12" fill="#0f172a" stroke="#f472b6"/><text x="192" y="288" fill="#fff">User</text><text x="192" y="308" fill="#9aa7c7" font-size="11" font-weight="400">a.valiyev</text>
+        <rect x="268" y="262" width="125" height="58" rx="12" fill="#0f172a" stroke="#f472b6"/><text x="330" y="288" fill="#fff">Computer</text><text x="330" y="308" fill="#9aa7c7" font-size="11" font-weight="400">TSH-PC-014</text>
+        <rect x="406" y="262" width="125" height="58" rx="12" fill="#0f172a" stroke="#f472b6"/><text x="468" y="288" fill="#fff">Group</text><text x="468" y="308" fill="#9aa7c7" font-size="11" font-weight="400">GG_IT_Admins</text>
+        <rect x="130" y="334" width="125" height="58" rx="12" fill="#0f172a" stroke="#f472b6"/><text x="192" y="368" fill="#fff">Printer</text>
+        <rect x="268" y="334" width="125" height="58" rx="12" fill="#0f172a" stroke="#f472b6"/><text x="330" y="368" fill="#fff">Contact</text>
+        <rect x="406" y="334" width="125" height="58" rx="12" fill="#0f172a" stroke="#f472b6"/><text x="468" y="368" fill="#fff">gMSA</text>
+      </g>
+    </svg>
+    <div class="col">
+      <div class="card" style="margin-bottom:12px"><h3>Ichma-ich joylashuv</h3><p style="margin:0" class="mut">Har bir daraja yuqoridagisining ichida joylashadi. Obyekt har doim aniq <b>bitta</b> domenga tegishli.</p></div>
+      <div class="card" style="margin-bottom:12px"><h3>Meros</h3><p style="margin:0" class="mut">GPO va ruxsatlar (ACL) yuqoridan pastga meros boʻlib oʻtadi: Site » Domain » OU.</p></div>
+      <div class="card"><h3>Distinguished Name</h3><p style="margin:0;font-size:14px"><code>CN=Ali Valiyev,OU=IT,DC=uztech,DC=uz</code></p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 6. DOMEN ===================== -->
+<section class="slide">
+  <div class="tag">02 · Domen</div>
+  <h2>Domen (Domain) — AD ning asosiy birligi</h2>
+  <div class="body row">
+    <div class="col" style="flex:1.3">
+      <p>Domen — umumiy katalog bazasi, xavfsizlik siyosati va ishonch munosabatlariga ega obyektlarning <b>maʼmuriy guruhi</b>. Har bir domen DNS domen nomiga mos keladi.</p>
+      <div class="row" style="gap:14px;margin-top:10px">
+        <div class="card col"><div class="num">1</div><h3 style="margin-top:6px">Maʼmuriy chegara</h3><p class="mut" style="margin:0;font-size:15px">Domain Admins faqat oʻz domenini boshqaradi</p></div>
+        <div class="card col"><div class="num">2</div><h3 style="margin-top:6px">Replikatsiya birligi</h3><p class="mut" style="margin:0;font-size:15px">Domain partition faqat shu domen DC lariga tarqaladi</p></div>
+      </div>
+      <div class="row" style="gap:14px;margin-top:18px">
+        <div class="card col"><div class="num">3</div><h3 style="margin-top:6px">Parol siyosati</h3><p class="mut" style="margin:0;font-size:15px">Default Domain Policy; nozik sozlash uchun PSO (FGPP)</p></div>
+        <div class="card col"><div class="num">4</div><h3 style="margin-top:6px">Autentifikatsiya</h3><p class="mut" style="margin:0;font-size:15px">Kerberos KDC har bir DC da ishlaydi</p></div>
+      </div>
+      <p class="note" style="margin-top:18px">Microsoft tavsiyasi: <b>xavfsizlik chegarasi — oʻrmon</b>, domen emas. Bir domendagi Domain Admin butun oʻrmonga taʼsir oʻtkaza oladi.</p>
+    </div>
+    <div class="col">
+      <svg width="100%" height="440" viewBox="0 0 440 440">
+        <use href="#tri3" x="70" y="10" width="300" height="250" filter="url(#glow)"/>
+        <text x="220" y="175" text-anchor="middle" fill="#fff" font-size="26" font-weight="800">uztech.uz</text>
+        <text x="220" y="203" text-anchor="middle" fill="#dcfce7" font-size="14">NetBIOS: UZTECH</text>
+        <g>
+          <use href="#srv" x="70" y="290" width="48" height="60"/><use href="#srv" x="196" y="290" width="48" height="60"/><use href="#srv" x="322" y="290" width="48" height="60"/>
+          <g fill="#9aa7c7" font-size="13" text-anchor="middle"><text x="94" y="370">DC01</text><text x="220" y="370">DC02</text><text x="346" y="370">DC03</text></g>
+          <path d="M118 320 H196 M244 320 H322" stroke="#fbbf24" stroke-width="2.5" marker-end="url(#arrA)" marker-start="url(#arrA)"/>
+          <text x="220" y="405" text-anchor="middle" fill="#fcd34d" font-size="14">multi-master replikatsiya</text>
+        </g>
+        <line x1="220" y1="258" x2="220" y2="290" stroke="#4ade80" stroke-width="2" stroke-dasharray="4 4"/>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 7. NOMLASH ===================== -->
+<section class="slide">
+  <div class="tag">02 · Domen</div>
+  <h2>Domen va obyektlarni nomlash qoidalari</h2>
+  <div class="body row">
+    <div class="col">
+      <table>
+        <tr><th>Nom turi</th><th>Misol</th></tr>
+        <tr><td><b>DNS (FQDN)</b></td><td><code>sam.uztech.uz</code></td></tr>
+        <tr><td><b>NetBIOS</b> (&lt;=15 belgi)</td><td><code>SAMUZTECH</code></td></tr>
+        <tr><td><b>Distinguished Name</b></td><td><code>CN=PC01,OU=Kompyuterlar,DC=sam,DC=uztech,DC=uz</code></td></tr>
+        <tr><td><b>UPN</b></td><td><code>a.valiyev@uztech.uz</code></td></tr>
+        <tr><td><b>sAMAccountName</b></td><td><code>SAM\a.valiyev</code></td></tr>
+        <tr><td><b>Canonical Name</b></td><td><code>sam.uztech.uz/Kompyuterlar/PC01</code></td></tr>
+      </table>
+      <p class="note" style="margin-top:14px">Tavsiya: roʻyxatdan oʻtgan ommaviy domenning <b>subdomeni</b>ni ishlating (masalan <code>ad.uztech.uz</code> yoki <code>corp.uztech.uz</code>). <code>.local</code> dan qoching — u mDNS bilan toʻqnashadi va ommaviy SSL sertifikat olib boʻlmaydi.</p>
+    </div>
+    <div class="col">
+      <pre><div class="bar"><i></i><i></i><i></i><span>DNS SRV yozuvlari — klient DC ni shu orqali topadi</span></div><span class="c">; _msdcs zonasi (avtomatik yaratiladi)</span>
+<span class="k">_ldap._tcp.dc._msdcs.uztech.uz</span>        <span class="p">SRV</span> 0 100 <span class="s">389</span>  dc01.uztech.uz.
+<span class="k">_kerberos._tcp.dc._msdcs.uztech.uz</span>    <span class="p">SRV</span> 0 100 <span class="s">88</span>   dc01.uztech.uz.
+<span class="k">_gc._tcp.uztech.uz</span>                    <span class="p">SRV</span> 0 100 <span class="s">3268</span> dc01.uztech.uz.
+<span class="k">_ldap._tcp.Toshkent._sites.uztech.uz</span>  <span class="p">SRV</span> 0 100 <span class="s">389</span>  dc01.uztech.uz.</pre>
+      <pre style="margin-top:14px"><div class="bar"><i></i><i></i><i></i><span>PowerShell — tekshirish</span></div><span class="c"># DC ni DNS orqali topish</span>
+<span class="k">Resolve-DnsName</span> <span class="p">-Type</span> SRV <span class="s">_ldap._tcp.dc._msdcs.uztech.uz</span>
+<span class="k">nltest</span> <span class="p">/dsgetdc:</span>uztech.uz
+
+<span class="c"># Obyektning DN ini olish</span>
+<span class="k">Get-ADUser</span> a.valiyev | <span class="k">Select</span> DistinguishedName, UserPrincipalName</pre>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 8. DC VA BAZA ===================== -->
+<section class="slide">
+  <div class="tag">02 · Domen</div>
+  <h2>Domain Controller va AD maʼlumotlar bazasi</h2>
+  <div class="body row">
+    <div class="col">
+      <svg width="100%" height="300" viewBox="0 0 560 300">
+        <rect x="10" y="10" width="540" height="280" rx="18" fill="rgba(255,255,255,.03)" stroke="#334a80"/>
+        <use href="#srv" x="30" y="30" width="60" height="75"/>
+        <text x="100" y="62" fill="#fff" font-size="18" font-weight="700">DC01.uztech.uz</text>
+        <text x="100" y="84" fill="#9aa7c7" font-size="13">C:\Windows\NTDS\ntds.dit  (ESE baza)</text>
+        <g font-size="13" font-weight="600">
+          <rect x="30" y="120" width="160" height="70" rx="10" fill="#1e3a8a" stroke="#60a5fa"/><text x="110" y="150" fill="#fff" text-anchor="middle">Schema</text><text x="110" y="170" fill="#93c5fd" text-anchor="middle" font-size="11" font-weight="400">oʻrmon boʻylab</text>
+          <rect x="200" y="120" width="160" height="70" rx="10" fill="#312e81" stroke="#a78bfa"/><text x="280" y="150" fill="#fff" text-anchor="middle">Configuration</text><text x="280" y="170" fill="#c4b5fd" text-anchor="middle" font-size="11" font-weight="400">oʻrmon boʻylab</text>
+          <rect x="370" y="120" width="160" height="70" rx="10" fill="#14532d" stroke="#4ade80"/><text x="450" y="150" fill="#fff" text-anchor="middle">Domain</text><text x="450" y="170" fill="#86efac" text-anchor="middle" font-size="11" font-weight="400">faqat shu domen</text>
+          <rect x="30" y="202" width="245" height="70" rx="10" fill="#78350f" stroke="#fbbf24"/><text x="152" y="232" fill="#fff" text-anchor="middle">Application (DNS zonalar)</text><text x="152" y="252" fill="#fcd34d" text-anchor="middle" font-size="11" font-weight="400">ForestDnsZones / DomainDnsZones</text>
+          <rect x="285" y="202" width="245" height="70" rx="10" fill="#831843" stroke="#f472b6"/><text x="407" y="232" fill="#fff" text-anchor="middle">SYSVOL (DFSR)</text><text x="407" y="252" fill="#f9a8d4" text-anchor="middle" font-size="11" font-weight="400">GPO shablonlari, logon skriptlar</text>
+        </g>
+      </svg>
+      <p class="mut" style="font-size:15px;margin-top:6px">AD bazasi <b>mantiqiy boʻlimlar</b> (naming context / partition) ga ajratilgan; har biri oʻz doirasida replikatsiya qilinadi.</p>
+    </div>
+    <div class="col">
+      <pre><div class="bar"><i></i><i></i><i></i><span>DC dagi asosiy fayllar</span></div><span class="c"># Baza va tranzaksiya jurnallari</span>
+C:\Windows\NTDS\<span class="s">ntds.dit</span>      <span class="c"># asosiy baza</span>
+C:\Windows\NTDS\<span class="s">edb.log</span>       <span class="c"># joriy jurnal</span>
+C:\Windows\NTDS\<span class="s">edb.chk</span>       <span class="c"># checkpoint</span>
+C:\Windows\SYSVOL\domain\<span class="s">Policies</span>
+
+<span class="c"># Boʻlimlarni koʻrish</span>
+<span class="k">Get-ADRootDSE</span> | <span class="k">Select</span> <span class="p">-Expand</span> namingContexts</pre>
+      <div class="card" style="margin-top:14px">
+        <h3>Asosiy faktlar</h3>
+        <ul style="font-size:15px">
+          <li><b>Multi-master</b>: har bir yozuvchi DC oʻzgarishni qabul qiladi (USN + versiya)</li>
+          <li><b>RODC</b> — faqat oʻqish uchun DC, filiallar uchun</li>
+          <li>Tombstone lifetime: <b>180 kun</b> (yangi oʻrmonlarda)</li>
+          <li>WS 2025: yangi oʻrnatishlarda <b>32k sahifali</b> baza formati</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 9. DARAXT ===================== -->
+<section class="slide">
+  <div class="tag">03 · Daraxt</div>
+  <h2>Daraxt (Domain Tree) — uzluksiz nomlar fazosi</h2>
+  <div class="body row">
+    <div class="col" style="flex:.9">
+      <p><b>Daraxt</b> — umumiy, <b>uzluksiz (contiguous) DNS nomlar fazosi</b>ga ega boʻlgan, ota-bola (parent–child) munosabati bilan bogʻlangan domenlar toʻplami.</p>
+      <ul>
+        <li>Bola domen nomi ota domen nomini oʻz ichiga oladi: <code>sam.uztech.uz</code> » <code>uztech.uz</code></li>
+        <li>Ota va bola orasida avtomatik <b>ikki tomonlama tranzitiv</b> trust yaratiladi</li>
+        <li>Daraxtning birinchi domeni — <b>daraxt ildizi</b> (tree root)</li>
+        <li>Barcha domenlar oʻrmonning umumiy sxema va konfiguratsiyasidan foydalanadi</li>
+        <li>Qachon kerak: filiallar alohida maʼmuriyat yoki replikatsiya izolyatsiyasini talab qilganda</li>
+      </ul>
+    </div>
+    <div class="col">
+      <svg width="100%" height="470" viewBox="0 0 600 470">
+        <rect x="5" y="5" width="590" height="460" rx="22" fill="rgba(139,92,246,.06)" stroke="#8b5cf6" stroke-dasharray="7 6" stroke-width="2"/>
+        <text x="25" y="34" fill="#c4b5fd" font-size="15" font-weight="700">Daraxt: uztech.uz</text>
+        <g stroke="#7dd3fc" stroke-width="2.5">
+          <line x1="300" y1="140" x2="140" y2="250" marker-end="url(#arr)" marker-start="url(#arr)"/>
+          <line x1="300" y1="140" x2="300" y2="250" marker-end="url(#arr)" marker-start="url(#arr)"/>
+          <line x1="300" y1="140" x2="460" y2="250" marker-end="url(#arr)" marker-start="url(#arr)"/>
+          <line x1="140" y1="330" x2="140" y2="365" marker-end="url(#arr)" marker-start="url(#arr)"/>
+        </g>
+        <use href="#tri" x="225" y="45" width="150" height="125" filter="url(#glow)"/>
+        <text x="300" y="150" text-anchor="middle" fill="#fff" font-size="15" font-weight="700">uztech.uz</text>
+        <text x="300" y="190" text-anchor="middle" fill="#93c5fd" font-size="12">daraxt ildizi</text>
+        <use href="#tri" x="85" y="240" width="110" height="92"/><text x="140" y="320" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">tsh.uztech.uz</text>
+        <use href="#tri" x="245" y="240" width="110" height="92"/><text x="300" y="320" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">sam.uztech.uz</text>
+        <use href="#tri" x="405" y="240" width="110" height="92"/><text x="460" y="320" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">fer.uztech.uz</text>
+        <use href="#tri" x="95" y="360" width="90" height="76"/><text x="140" y="425" text-anchor="middle" fill="#fff" font-size="10" font-weight="700">yun.tsh.uztech.uz</text>
+        <text x="215" y="205" fill="#7dd3fc" font-size="11" transform="rotate(-34 215 205)">parent-child</text>
+        <rect x="300" y="380" width="280" height="68" rx="12" fill="#0f172a" stroke="#38bdf8"/>
+        <text x="315" y="405" fill="#fff" font-size="13" font-weight="700">Ikki tomonlama tranzitiv trust</text>
+        <text x="315" y="428" fill="#9aa7c7" font-size="12">yun.tsh… foydalanuvchisi fer… resursiga</text>
+        <text x="315" y="443" fill="#9aa7c7" font-size="12">kira oladi (ruxsat berilgan boʻlsa)</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 10. ORMON ===================== -->
+<section class="slide">
+  <div class="tag">04 · Oʻrmon</div>
+  <h2>Oʻrmon (Forest) — AD ning eng yuqori konteyneri</h2>
+  <div class="body row">
+    <div class="col" style="flex:1.25">
+      <svg width="100%" height="480" viewBox="0 0 700 480">
+        <rect x="5" y="5" width="690" height="470" rx="26" fill="rgba(56,189,248,.05)" stroke="#38bdf8" stroke-width="2.5"/>
+        <text x="28" y="38" fill="#7dd3fc" font-size="17" font-weight="800">OʻRMON: uztech.uz (oʻrmon ildizi nomi bilan ataladi)</text>
+        <rect x="25" y="55" width="320" height="300" rx="18" fill="rgba(59,130,246,.07)" stroke="#3b82f6" stroke-dasharray="6 5"/>
+        <text x="40" y="78" fill="#93c5fd" font-size="13" font-weight="700">Daraxt 1</text>
+        <rect x="360" y="55" width="315" height="300" rx="18" fill="rgba(139,92,246,.07)" stroke="#8b5cf6" stroke-dasharray="6 5"/>
+        <text x="375" y="78" fill="#c4b5fd" font-size="13" font-weight="700">Daraxt 2</text>
+        <g stroke="#7dd3fc" stroke-width="2.2">
+          <line x1="185" y1="170" x2="105" y2="245"/><line x1="185" y1="170" x2="265" y2="245"/>
+          <line x1="517" y1="170" x2="517" y2="245"/>
+        </g>
+        <use href="#tri" x="125" y="80" width="120" height="100" filter="url(#glow)"/>
+        <text x="185" y="160" text-anchor="middle" fill="#fff" font-size="14" font-weight="700">uztech.uz</text>
+        <text x="185" y="198" text-anchor="middle" fill="#fcd34d" font-size="11" font-weight="700">oʻrmon ildizi</text>
+        <use href="#tri" x="60" y="240" width="90" height="76"/><text x="105" y="306" text-anchor="middle" fill="#fff" font-size="11" font-weight="600">tsh.uztech.uz</text>
+        <use href="#tri" x="220" y="240" width="90" height="76"/><text x="265" y="306" text-anchor="middle" fill="#fff" font-size="11" font-weight="600">sam.uztech.uz</text>
+        <use href="#tri2" x="457" y="80" width="120" height="100" filter="url(#glow)"/>
+        <text x="517" y="160" text-anchor="middle" fill="#fff" font-size="14" font-weight="700">uzbank.uz</text>
+        <use href="#tri2" x="472" y="240" width="90" height="76"/><text x="517" y="306" text-anchor="middle" fill="#fff" font-size="11" font-weight="600">krd.uzbank.uz</text>
+        <path d="M245 125 Q350 70 457 125" fill="none" stroke="#f472b6" stroke-width="3" stroke-dasharray="7 5" marker-end="url(#arrP)" marker-start="url(#arrP)"/>
+        <text x="351" y="72" text-anchor="middle" fill="#f9a8d4" font-size="12" font-weight="700">tree-root trust</text>
+        <g font-size="14" font-weight="700" text-anchor="middle">
+          <rect x="25" y="372" width="205" height="86" rx="14" fill="#1e3a8a" stroke="#60a5fa"/><text x="127" y="405" fill="#fff">Umumiy SXEMA</text><text x="127" y="428" fill="#93c5fd" font-size="12" font-weight="400">obyekt sinflari va atributlar</text>
+          <rect x="247" y="372" width="205" height="86" rx="14" fill="#312e81" stroke="#a78bfa"/><text x="349" y="405" fill="#fff">Umumiy KONFIGURATSIYA</text><text x="349" y="428" fill="#c4b5fd" font-size="12" font-weight="400">saytlar, xizmatlar, topologiya</text>
+          <rect x="469" y="372" width="206" height="86" rx="14" fill="#14532d" stroke="#4ade80"/><text x="572" y="405" fill="#fff">GLOBAL KATALOG</text><text x="572" y="428" fill="#86efac" font-size="12" font-weight="400">oʻrmon boʻylab qidiruv</text>
+        </g>
+      </svg>
+    </div>
+    <div class="col">
+      <p>Oʻrmon — bir yoki bir nechta daraxtdan iborat, ammo <b>uzluksiz boʻlmagan</b> (disjoint) nomlar fazolariga ega boʻlishi mumkin boʻlgan tuzilma.</p>
+      <div class="card" style="margin-bottom:10px"><h3>Umumiy jihatlar</h3><ul style="font-size:15px"><li>Bitta sxema</li><li>Bitta konfiguratsiya boʻlimi</li><li>Global Catalog</li><li>Barcha domenlar orasida tranzitiv trust</li></ul></div>
+      <div class="card"><h3>Oʻrmon = xavfsizlik chegarasi</h3><p style="margin:0;font-size:15px" class="mut">Toʻliq izolyatsiya faqat alohida oʻrmon bilan taʼminlanadi.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 11. ORMON ILDIZI ===================== -->
+<section class="slide">
+  <div class="tag">04 · Oʻrmon</div>
+  <h2>Oʻrmon ildiz domeni va maxsus guruhlar</h2>
+  <div class="body row">
+    <div class="col">
+      <p>Oʻrmonda yaratilgan <b>birinchi domen</b> — oʻrmon ildiz domeni. Uni oʻrmonni toʻliq qayta qurmasdan <b>oʻchirib yoki almashtirib boʻlmaydi</b>, shu sababli nomi puxta tanlanishi kerak.</p>
+      <table>
+        <tr><th>Guruh</th><th>Qayerda</th><th>Vakolati</th></tr>
+        <tr><td><b>Enterprise Admins</b></td><td>faqat ildizda</td><td>Oʻrmondagi barcha domenlar ustidan toʻliq nazorat</td></tr>
+        <tr><td><b>Schema Admins</b></td><td>faqat ildizda</td><td>Sxemani oʻzgartirish huquqi</td></tr>
+        <tr><td><b>Domain Admins</b></td><td>har bir domenda</td><td>Oʻz domeni ustidan toʻliq nazorat</td></tr>
+        <tr><td><b>Administrators</b></td><td>har bir domenda</td><td>DC lar ustidan mahalliy nazorat</td></tr>
+        <tr><td><b>Protected Users</b></td><td>har bir domenda</td><td>NTLM, DES/RC4, delegatsiyani bloklaydi</td></tr>
+      </table>
+    </div>
+    <div class="col">
+      <div class="card" style="border-left:4px solid var(--am)">
+        <h3>Ajratilgan ildiz (Dedicated Forest Root)</h3>
+        <p class="mut" style="font-size:15px;margin-top:0">Ildiz domenida foydalanuvchilar saqlanmaydi; u faqat oʻrmon darajasidagi guruhlar va rollar uchun xizmat qiladi.</p>
+        <div class="row" style="gap:10px">
+          <div class="col"><span class="pill g">+ izolyatsiya</span><span class="pill g">+ kichik hajm</span><span class="pill g">+ barqaror nom</span></div>
+          <div class="col"><span class="pill r">– qoʻshimcha DC</span><span class="pill r">– murakkablik</span></div>
+        </div>
+      </div>
+      <pre style="margin-top:16px"><div class="bar"><i></i><i></i><i></i><span>Oʻrmon darajasidagi guruhlarni tekshirish</span></div><span class="c"># Schema Admins boʻsh boʻlishi kerak (zarurat boʻlganda qoʻshiladi)</span>
+<span class="k">Get-ADGroupMember</span> <span class="s">"Schema Admins"</span>
+<span class="k">Get-ADGroupMember</span> <span class="s">"Enterprise Admins"</span> <span class="p">-Recursive</span> |
+    <span class="k">Select</span> Name, SamAccountName
+
+<span class="c"># Oʻrmon ildizini aniqlash</span>
+(<span class="k">Get-ADForest</span>).RootDomain</pre>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 12. TAQQOSLASH ===================== -->
+<section class="slide">
+  <div class="tag">05 · Taqqoslash</div>
+  <h2>Domen, daraxt va oʻrmon: taqqoslash</h2>
+  <div class="body">
+    <table style="font-size:15.5px">
+      <tr><th style="width:22%">Mezon</th><th>Domen</th><th>Daraxt</th><th>Oʻrmon</th></tr>
+      <tr><td><b>Taʼrif</b></td><td>Umumiy baza va siyosatli obyektlar guruhi</td><td>Uzluksiz DNS nomli domenlar ierarxiyasi</td><td>Bir yoki bir nechta daraxt toʻplami</td></tr>
+      <tr><td><b>Nomlar fazosi</b></td><td>Bitta DNS nomi</td><td>Uzluksiz (contiguous)</td><td>Uzluksiz boʻlmasligi mumkin (disjoint)</td></tr>
+      <tr><td><b>Chegara turi</b></td><td>Maʼmuriy, replikatsiya, parol siyosati</td><td>Nomlash chegarasi</td><td><b>Xavfsizlik</b> chegarasi</td></tr>
+      <tr><td><b>Sxema</b></td><td>Oʻrmonnikini ishlatadi</td><td>Oʻrmonnikini ishlatadi</td><td>Yagona, umumiy</td></tr>
+      <tr><td><b>Trust</b></td><td>—</td><td>Parent-child (avtomatik)</td><td>Tree-root (avtomatik); boshqa oʻrmon bilan forest trust</td></tr>
+      <tr><td><b>Admin guruh</b></td><td>Domain Admins</td><td>—</td><td>Enterprise / Schema Admins</td></tr>
+      <tr><td><b>FSMO</b></td><td>RID, PDC, Infrastructure</td><td>—</td><td>Schema, Domain Naming</td></tr>
+      <tr><td><b>Misol</b></td><td><code>sam.uztech.uz</code></td><td><code>uztech.uz</code> + bolalari</td><td><code>uztech.uz</code> + <code>uzbank.uz</code></td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ===================== 13. TRUST TURLARI ===================== -->
+<section class="slide">
+  <div class="tag">06 · Ishonch munosabatlari</div>
+  <h2>Ishonch (Trust) turlari</h2>
+  <div class="body">
+    <p style="margin:0 0 12px" class="mut">Trust — bir domen (ishonuvchi, <i>trusting</i>) boshqa domen (ishonchli, <i>trusted</i>) foydalanuvchilarining autentifikatsiyasini qabul qilishi. Ruxsat (access) alohida beriladi.</p>
+    <table style="font-size:15px">
+      <tr><th>Turi</th><th>Yoʻnalish</th><th>Tranzitivlik</th><th>Yaratilishi</th><th>Qoʻllanilishi</th></tr>
+      <tr><td><b>Parent-child</b></td><td>Ikki tomonlama</td><td><span class="pill g">Tranzitiv</span></td><td>Avtomatik</td><td>Daraxt ichida ota va bola domen</td></tr>
+      <tr><td><b>Tree-root</b></td><td>Ikki tomonlama</td><td><span class="pill g">Tranzitiv</span></td><td>Avtomatik</td><td>Yangi daraxt ildizi – oʻrmon ildizi</td></tr>
+      <tr><td><b>Shortcut</b></td><td>Bir / ikki</td><td><span class="pill g">Tranzitiv</span></td><td>Qoʻlda</td><td>Oʻrmon ichida autentifikatsiya yoʻlini qisqartirish</td></tr>
+      <tr><td><b>Forest</b></td><td>Bir / ikki</td><td><span class="pill a">Qisman</span></td><td>Qoʻlda</td><td>Ikki oʻrmon ildizlari orasida; 3-oʻrmonga oʻtmaydi</td></tr>
+      <tr><td><b>External</b></td><td>Bir / ikki</td><td><span class="pill r">Notranzitiv</span></td><td>Qoʻlda</td><td>Boshqa oʻrmondagi aniq bitta domen bilan</td></tr>
+      <tr><td><b>Realm</b></td><td>Bir / ikki</td><td><span class="pill v">Tanlanadi</span></td><td>Qoʻlda</td><td>Windows boʻlmagan Kerberos v5 (MIT, Linux)</td></tr>
+    </table>
+    <p class="note" style="margin-top:14px">Yoʻnalish qoidasi: <b>kirish (access) yoʻnalishi trust yoʻnalishiga teskari</b>. A » B ga ishonsa (A trusting), B foydalanuvchilari A resurslariga kira oladi.</p>
+  </div>
+</section>
+
+<!-- ===================== 14. TRUST DIAGRAMMASI ===================== -->
+<section class="slide">
+  <div class="tag">06 · Ishonch munosabatlari</div>
+  <h2>Tranzitivlik, shortcut va forest trust</h2>
+  <div class="body row">
+    <svg width="780" height="500" viewBox="0 0 780 500">
+      <rect x="5" y="5" width="470" height="490" rx="20" fill="rgba(56,189,248,.05)" stroke="#38bdf8" stroke-width="2"/>
+      <text x="22" y="32" fill="#7dd3fc" font-size="14" font-weight="800">Oʻrmon A: uztech.uz</text>
+      <rect x="560" y="5" width="215" height="490" rx="20" fill="rgba(34,197,94,.05)" stroke="#22c55e" stroke-width="2"/>
+      <text x="577" y="32" fill="#86efac" font-size="14" font-weight="800">Oʻrmon B: partner.uz</text>
+      <g stroke="#7dd3fc" stroke-width="2.2">
+        <line x1="240" y1="135" x2="125" y2="225" marker-end="url(#arr)" marker-start="url(#arr)"/>
+        <line x1="240" y1="135" x2="355" y2="225" marker-end="url(#arr)" marker-start="url(#arr)"/>
+        <line x1="115" y1="310" x2="115" y2="365" marker-end="url(#arr)" marker-start="url(#arr)"/>
+        <line x1="365" y1="310" x2="365" y2="365" marker-end="url(#arr)" marker-start="url(#arr)"/>
+      </g>
+      <use href="#tri" x="185" y="45" width="110" height="92" filter="url(#glow)"/><text x="240" y="122" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">uztech.uz</text>
+      <use href="#tri" x="65" y="220" width="100" height="84"/><text x="115" y="292" text-anchor="middle" fill="#fff" font-size="11" font-weight="700">tsh</text>
+      <use href="#tri" x="315" y="220" width="100" height="84"/><text x="365" y="292" text-anchor="middle" fill="#fff" font-size="11" font-weight="700">sam</text>
+      <use href="#tri4" x="70" y="360" width="90" height="76"/><text x="115" y="425" text-anchor="middle" fill="#fff" font-size="11" font-weight="700">A1</text>
+      <use href="#tri4" x="320" y="360" width="90" height="76"/><text x="365" y="425" text-anchor="middle" fill="#fff" font-size="11" font-weight="700">B1</text>
+      <path d="M160 405 Q240 470 320 405" fill="none" stroke="#fbbf24" stroke-width="3" stroke-dasharray="8 5" marker-end="url(#arrA)" marker-start="url(#arrA)"/>
+      <text x="240" y="485" text-anchor="middle" fill="#fcd34d" font-size="13" font-weight="700">Shortcut trust (A1 – B1)</text>
+      <use href="#tri3" x="613" y="60" width="110" height="92" filter="url(#glow)"/><text x="668" y="137" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">partner.uz</text>
+      <use href="#tri3" x="623" y="230" width="90" height="76"/><text x="668" y="295" text-anchor="middle" fill="#fff" font-size="11" font-weight="700">dev</text>
+      <line x1="668" y1="150" x2="668" y2="232" stroke="#4ade80" stroke-width="2.2" marker-end="url(#arrG)" marker-start="url(#arrG)"/>
+      <line x1="296" y1="95" x2="612" y2="105" stroke="#f472b6" stroke-width="3.5" marker-end="url(#arrP)" marker-start="url(#arrP)"/>
+      <text x="455" y="88" text-anchor="middle" fill="#f9a8d4" font-size="13" font-weight="700">Forest trust</text>
+      <text x="455" y="125" text-anchor="middle" fill="#9aa7c7" font-size="11">(oʻrmon ildizlari orasida)</text>
+    </svg>
+    <div class="col">
+      <div class="card" style="margin-bottom:12px"><h3>Shortcut boʻlmasa</h3><p class="mut" style="margin:0;font-size:14.5px">A1 » B1 autentifikatsiyasi yoʻli:<br><code>A1 » tsh » uztech » sam » B1</code><br>4 ta Kerberos referral</p></div>
+      <div class="card" style="margin-bottom:12px;border-left:4px solid var(--am)"><h3>Shortcut bilan</h3><p class="mut" style="margin:0;font-size:14.5px"><code>A1 » B1</code> — bevosita, tez, WAN yuklamasi kam</p></div>
+      <div class="card" style="border-left:4px solid var(--pk)"><h3>Forest trust</h3><p class="mut" style="margin:0;font-size:14.5px">Ikkala oʻrmonning barcha domenlari orasida ishlaydi. Talab: FFL &gt;= 2003, DNS conditional forwarder.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 15. FSMO ===================== -->
+<section class="slide">
+  <div class="tag">07 · Operatsion rollar</div>
+  <h2>FSMO (Operations Master) rollari</h2>
+  <div class="body row">
+    <div class="col" style="flex:1.35">
+      <table style="font-size:14.8px">
+        <tr><th>Rol</th><th>Doira</th><th>Vazifasi</th></tr>
+        <tr><td><b>Schema Master</b></td><td><span class="pill">Oʻrmon · 1 ta</span></td><td>Sxemaga yozish huquqiga ega yagona DC</td></tr>
+        <tr><td><b>Domain Naming Master</b></td><td><span class="pill">Oʻrmon · 1 ta</span></td><td>Domen qoʻshish/oʻchirish, application partitionlar</td></tr>
+        <tr><td><b>RID Master</b></td><td><span class="pill v">Har domen</span></td><td>DC larga RID pul (standart 500 ta) ajratadi » SID yaratish</td></tr>
+        <tr><td><b>PDC Emulator</b></td><td><span class="pill v">Har domen</span></td><td>Vaqt manbai (oʻrmon ildizidagisi — asosiy), parol oʻzgarishlari, account lockout, GPO tahriri</td></tr>
+        <tr><td><b>Infrastructure Master</b></td><td><span class="pill v">Har domen</span></td><td>Domenlararo obyekt havolalarini (phantom) yangilaydi</td></tr>
+      </table>
+      <p class="note" style="margin-top:12px">Formula: oʻrmondagi FSMO rollar soni = <b>2 + 3 × (domenlar soni)</b>. 3 domenli oʻrmonda — 11 ta rol.</p>
+    </div>
+    <div class="col">
+      <pre><div class="bar"><i></i><i></i><i></i><span>Rollarni koʻrish va koʻchirish</span></div><span class="c"># Barcha rollar egasini koʻrish</span>
+<span class="k">netdom</span> query fsmo
+
+<span class="k">Get-ADForest</span> | <span class="k">Select</span> SchemaMaster,
+    DomainNamingMaster
+<span class="k">Get-ADDomain</span> | <span class="k">Select</span> PDCEmulator,
+    RIDMaster, InfrastructureMaster
+
+<span class="c"># Rolni boshqa DC ga koʻchirish (transfer)</span>
+<span class="k">Move-ADDirectoryServerOperationMasterRole</span> `
+   <span class="p">-Identity</span> <span class="s">"DC02"</span> `
+   <span class="p">-OperationMasterRole</span> PDCEmulator, RIDMaster
+
+<span class="c"># DC ishdan chiqqanda — tortib olish (seize)</span>
+<span class="k">Move-ADDirectoryServerOperationMasterRole</span> `
+   <span class="p">-Identity</span> <span class="s">"DC02"</span> <span class="p">-OperationMasterRole</span> 0,1,2,3,4 <span class="p">-Force</span></pre>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 16. GC VA SXEMA ===================== -->
+<section class="slide">
+  <div class="tag">07 · Operatsion rollar</div>
+  <h2>Global Catalog va Sxema</h2>
+  <div class="body row">
+    <div class="col card" style="border-top:4px solid var(--gr)">
+      <h3 style="color:#86efac">Global Catalog (GC)</h3>
+      <ul style="font-size:15.5px">
+        <li>Oʻrmondagi <b>barcha</b> obyektlarning qisman (PAS) nusxasi</li>
+        <li>Port: <code>3268</code> (LDAP), <code>3269</code> (LDAPS)</li>
+        <li>Universal guruh aʼzoligini tekshiradi » logon uchun zarur</li>
+        <li>UPN orqali kirishda domenni aniqlaydi</li>
+        <li>Har bir saytda kamida bitta GC tavsiya etiladi (yoki <b>Universal Group Membership Caching</b>)</li>
+      </ul>
+      <svg width="100%" height="130" viewBox="0 0 500 130">
+        <use href="#tri" x="10" y="20" width="90" height="76"/><use href="#tri" x="110" y="20" width="90" height="76"/><use href="#tri2" x="210" y="20" width="90" height="76"/>
+        <g stroke="#4ade80" stroke-width="2" marker-end="url(#arrG)"><line x1="55" y1="100" x2="380" y2="70"/><line x1="155" y1="100" x2="380" y2="70"/><line x1="255" y1="100" x2="380" y2="70"/></g>
+        <rect x="385" y="35" width="105" height="64" rx="12" fill="#14532d" stroke="#4ade80"/><text x="437" y="64" text-anchor="middle" fill="#fff" font-weight="800" font-size="16">GC</text><text x="437" y="84" text-anchor="middle" fill="#86efac" font-size="11">qisman nusxa</text>
+      </svg>
+    </div>
+    <div class="col card" style="border-top:4px solid var(--bl)">
+      <h3 style="color:#93c5fd">Sxema (Schema)</h3>
+      <p style="font-size:15.5px;margin-top:0">Obyekt <b>sinflari</b> (classSchema) va <b>atributlari</b> (attributeSchema) taʼrifi. Oʻrmon boʻylab bitta va faqat <b>kengaytiriladi</b> — sinf/atributni oʻchirib boʻlmaydi, faqat «defunct» qilinadi.</p>
+      <pre><div class="bar"><i></i><i></i><i></i><span>Sxema versiyasini aniqlash</span></div><span class="k">Get-ADObject</span> (<span class="k">Get-ADRootDSE</span>).schemaNamingContext `
+   <span class="p">-Property</span> objectVersion | <span class="k">Select</span> objectVersion
+
+<span class="c"># 87 = WS2016 · 88 = WS2019/2022 · 91 = WS2025</span>
+<span class="c"># Sxemani tayyorlash (yangilash oldidan)</span>
+<span class="k">adprep</span> /forestprep
+<span class="k">adprep</span> /domainprep</pre>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 17. FUNKSIONAL DARAJALAR ===================== -->
+<section class="slide">
+  <div class="tag">07 · Operatsion rollar</div>
+  <h2>Domen va oʻrmon funksional darajalari (DFL / FFL)</h2>
+  <div class="body row">
+    <div class="col" style="flex:1.35">
+      <svg width="100%" height="150" viewBox="0 0 720 150">
+        <line x1="20" y1="70" x2="700" y2="70" stroke="#334a80" stroke-width="4" stroke-linecap="round"/>
+        <g font-size="13" text-anchor="middle" font-weight="700">
+          <circle cx="50" cy="70" r="11" fill="#475569"/><text x="50" y="45" fill="#cbd5e1">2003</text>
+          <circle cx="140" cy="70" r="11" fill="#475569"/><text x="140" y="45" fill="#cbd5e1">2008</text>
+          <circle cx="235" cy="70" r="11" fill="#3b82f6"/><text x="235" y="45" fill="#93c5fd">2008 R2</text><text x="235" y="105" fill="#9aa7c7" font-weight="400" font-size="11">Recycle Bin</text>
+          <circle cx="330" cy="70" r="11" fill="#3b82f6"/><text x="330" y="45" fill="#93c5fd">2012</text><text x="330" y="105" fill="#9aa7c7" font-weight="400" font-size="11">Kerberos armoring</text>
+          <circle cx="430" cy="70" r="11" fill="#6366f1"/><text x="430" y="45" fill="#a5b4fc">2012 R2</text><text x="430" y="105" fill="#9aa7c7" font-weight="400" font-size="11">Auth. Policy/Silo</text>
+          <circle cx="535" cy="70" r="13" fill="#8b5cf6"/><text x="535" y="45" fill="#c4b5fd">2016</text><text x="535" y="105" fill="#9aa7c7" font-weight="400" font-size="11">PAM, minimal</text><text x="535" y="120" fill="#9aa7c7" font-weight="400" font-size="11">daraja WS2025 uchun</text>
+          <circle cx="655" cy="70" r="16" fill="#ec4899" filter="url(#glow)"/><text x="655" y="40" fill="#f9a8d4">2025</text><text x="655" y="105" fill="#9aa7c7" font-weight="400" font-size="11">32k sahifa,</text><text x="655" y="120" fill="#9aa7c7" font-weight="400" font-size="11">yangi sxema</text>
+        </g>
+      </svg>
+      <ul style="font-size:15.5px">
+        <li><b>DFL</b> — domendagi DC lar minimal OS versiyasini va domen imkoniyatlarini belgilaydi</li>
+        <li><b>FFL</b> — oʻrmondagi barcha domenlar uchun; DFL hech qachon FFL dan past boʻlmaydi</li>
+        <li>WS 2019 va WS 2022 uchun <b>alohida daraja yoʻq</b> — ular 2016 darajasida ishlaydi</li>
+        <li>WS 2025 DC qoʻshish uchun FFL kamida <b>Windows Server 2016</b> boʻlishi kerak</li>
+        <li>Darajani koʻtarish — bir tomonlama amal; odatda orqaga qaytarib boʻlmaydi</li>
+      </ul>
+    </div>
+    <div class="col">
+      <pre><div class="bar"><i></i><i></i><i></i><span>Darajani tekshirish va koʻtarish</span></div><span class="c"># Joriy darajalar</span>
+(<span class="k">Get-ADForest</span>).ForestMode
+(<span class="k">Get-ADDomain</span>).DomainMode
+
+<span class="c"># Avval domen, keyin oʻrmon</span>
+<span class="k">Set-ADDomainMode</span> <span class="p">-Identity</span> <span class="s">uztech.uz</span> `
+    <span class="p">-DomainMode</span> Windows2025Domain
+
+<span class="k">Set-ADForestMode</span> <span class="p">-Identity</span> <span class="s">uztech.uz</span> `
+    <span class="p">-ForestMode</span> Windows2025Forest
+
+<span class="c"># AD Recycle Bin ni yoqish</span>
+<span class="k">Enable-ADOptionalFeature</span> <span class="s">'Recycle Bin Feature'</span> `
+    <span class="p">-Scope</span> ForestOrConfigurationSet `
+    <span class="p">-Target</span> <span class="s">uztech.uz</span></pre>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 18. OU DIZAYNI ===================== -->
+<section class="slide">
+  <div class="tag">08 · OU dizayni</div>
+  <h2>Organizational Unit (OU) dizayn modellari</h2>
+  <div class="body row" style="gap:18px">
+    <div class="col card">
+      <h3 style="color:#7dd3fc">Geografik model</h3>
+      <svg width="100%" height="170" viewBox="0 0 320 170">
+        <rect x="110" y="8" width="100" height="34" rx="8" fill="#14532d" stroke="#4ade80"/><text x="160" y="30" text-anchor="middle" fill="#fff" font-size="13" font-weight="700">uztech.uz</text>
+        <g stroke="#64748b" stroke-width="2" fill="none"><path d="M160 42 V60 H55 V78 M160 60 H265 V78 M160 60 V78"/></g>
+        <g font-size="12" font-weight="600" text-anchor="middle">
+          <rect x="10" y="78" width="90" height="30" rx="7" fill="#78350f" stroke="#fbbf24"/><text x="55" y="98" fill="#fff">Toshkent</text>
+          <rect x="115" y="78" width="90" height="30" rx="7" fill="#78350f" stroke="#fbbf24"/><text x="160" y="98" fill="#fff">Samarqand</text>
+          <rect x="220" y="78" width="90" height="30" rx="7" fill="#78350f" stroke="#fbbf24"/><text x="265" y="98" fill="#fff">Fargʻona</text>
+          <rect x="10" y="125" width="90" height="28" rx="7" fill="#1e293b" stroke="#64748b"/><text x="55" y="144" fill="#cbd5e1" font-size="11">IT · HR · Moliya</text>
+        </g>
+        <line x1="55" y1="108" x2="55" y2="125" stroke="#64748b" stroke-width="2"/>
+      </svg>
+      <p class="mut" style="font-size:14.5px;margin:0">Filiallarda mahalliy adminlar boʻlsa qulay. Tuzilma barqaror.</p>
+    </div>
+    <div class="col card">
+      <h3 style="color:#c4b5fd">Funksional model</h3>
+      <svg width="100%" height="170" viewBox="0 0 320 170">
+        <rect x="110" y="8" width="100" height="34" rx="8" fill="#14532d" stroke="#4ade80"/><text x="160" y="30" text-anchor="middle" fill="#fff" font-size="13" font-weight="700">uztech.uz</text>
+        <g stroke="#64748b" stroke-width="2" fill="none"><path d="M160 42 V60 H55 V78 M160 60 H265 V78 M160 60 V78"/></g>
+        <g font-size="12" font-weight="600" text-anchor="middle">
+          <rect x="10" y="78" width="90" height="30" rx="7" fill="#4c1d95" stroke="#a78bfa"/><text x="55" y="98" fill="#fff">IT</text>
+          <rect x="115" y="78" width="90" height="30" rx="7" fill="#4c1d95" stroke="#a78bfa"/><text x="160" y="98" fill="#fff">Moliya</text>
+          <rect x="220" y="78" width="90" height="30" rx="7" fill="#4c1d95" stroke="#a78bfa"/><text x="265" y="98" fill="#fff">HR</text>
+          <rect x="10" y="125" width="90" height="28" rx="7" fill="#1e293b" stroke="#64748b"/><text x="55" y="144" fill="#cbd5e1" font-size="11">Users · PCs</text>
+        </g>
+        <line x1="55" y1="108" x2="55" y2="125" stroke="#64748b" stroke-width="2"/>
+      </svg>
+      <p class="mut" style="font-size:14.5px;margin:0">Boʻlimlarga xos GPO lar uchun qulay; qayta tashkil etishda oʻzgaradi.</p>
+    </div>
+    <div class="col card" style="border:1px solid rgba(34,197,94,.5)">
+      <h3 style="color:#86efac">Gibrid model <span class="pill g">tavsiya</span></h3>
+      <svg width="100%" height="170" viewBox="0 0 320 170">
+        <rect x="110" y="8" width="100" height="34" rx="8" fill="#14532d" stroke="#4ade80"/><text x="160" y="30" text-anchor="middle" fill="#fff" font-size="13" font-weight="700">uztech.uz</text>
+        <g stroke="#64748b" stroke-width="2" fill="none"><path d="M160 42 V60 H55 V78 M160 60 H265 V78"/></g>
+        <g font-size="12" font-weight="600" text-anchor="middle">
+          <rect x="10" y="78" width="90" height="30" rx="7" fill="#78350f" stroke="#fbbf24"/><text x="55" y="98" fill="#fff">Toshkent</text>
+          <rect x="220" y="78" width="90" height="30" rx="7" fill="#7f1d1d" stroke="#f87171"/><text x="265" y="98" fill="#fff">_Admin (T0)</text>
+          <rect x="0" y="125" width="65" height="28" rx="7" fill="#4c1d95" stroke="#a78bfa"/><text x="32" y="144" fill="#fff" font-size="11">Users</text>
+          <rect x="75" y="125" width="80" height="28" rx="7" fill="#4c1d95" stroke="#a78bfa"/><text x="115" y="144" fill="#fff" font-size="11">Computers</text>
+          <rect x="165" y="125" width="65" height="28" rx="7" fill="#4c1d95" stroke="#a78bfa"/><text x="197" y="144" fill="#fff" font-size="11">Servers</text>
+        </g>
+        <path d="M55 108 V118 H32 V125 M55 118 H115 V125 M55 118 H197 V125" stroke="#64748b" stroke-width="2" fill="none"/>
+      </svg>
+      <p class="mut" style="font-size:14.5px;margin:0">Joylashuv » obyekt turi. Delegatsiya va GPO ni aniq ajratadi.</p>
+    </div>
+  </div>
+  <p class="note" style="margin-top:18px">OU ning ikki asosiy maqsadi: <b>vakolatni topshirish</b> (Delegation of Control) va <b>GPO bogʻlash</b>. Chuqurlik 3–5 darajadan oshmagani maʼqul; standart <code>CN=Users</code> va <code>CN=Computers</code> konteynerlariga GPO bogʻlab boʻlmaydi.</p>
+</section>
+
+<!-- ===================== 19. LOYIHALASH BOSQICHLARI ===================== -->
+<section class="slide">
+  <div class="tag">09 · Metodologiya</div>
+  <h2>AD mantiqiy tuzilmasini loyihalash bosqichlari</h2>
+  <div class="body">
+    <svg width="1150" height="210" viewBox="0 0 1150 210">
+      <g font-size="15" font-weight="700" text-anchor="middle" fill="#fff">
+        <path d="M0 40 H150 L180 105 L150 170 H0 L30 105 Z" fill="#1d4ed8"/><text x="92" y="100">1. Talablar</text><text x="92" y="122" font-size="12" font-weight="400" fill="#dbeafe">tahlili</text>
+        <path d="M165 40 H315 L345 105 L315 170 H165 L195 105 Z" fill="#4338ca"/><text x="257" y="100">2. Oʻrmon</text><text x="257" y="122" font-size="12" font-weight="400" fill="#e0e7ff">soni va modeli</text>
+        <path d="M330 40 H480 L510 105 L480 170 H330 L360 105 Z" fill="#6d28d9"/><text x="422" y="100">3. Domen</text><text x="422" y="122" font-size="12" font-weight="400" fill="#ede9fe">modeli, ildiz</text>
+        <path d="M495 40 H645 L675 105 L645 170 H495 L525 105 Z" fill="#9333ea"/><text x="587" y="100">4. DNS</text><text x="587" y="122" font-size="12" font-weight="400" fill="#f3e8ff">nomlar fazosi</text>
+        <path d="M660 40 H810 L840 105 L810 170 H660 L690 105 Z" fill="#c026d3"/><text x="752" y="100">5. OU</text><text x="752" y="122" font-size="12" font-weight="400" fill="#fae8ff">va delegatsiya</text>
+        <path d="M825 40 H975 L1005 105 L975 170 H825 L855 105 Z" fill="#db2777"/><text x="917" y="100">6. Saytlar</text><text x="917" y="122" font-size="12" font-weight="400" fill="#fce7f3">DC joylashuvi</text>
+        <path d="M990 40 H1140 L1140 170 H990 L1020 105 Z" fill="#059669"/><text x="1075" y="100">7. Joriy</text><text x="1075" y="122" font-size="12" font-weight="400" fill="#d1fae5">etish, test</text>
+      </g>
+    </svg>
+    <div class="row" style="gap:16px;margin-top:6px">
+      <div class="card col"><h3>Biznes talablar</h3><ul style="font-size:14.5px"><li>Tashkiliy tuzilma, filiallar</li><li>Qonunchilik (maʼlumot izolyatsiyasi)</li><li>Qoʻshilish/ajralish rejalari</li></ul></div>
+      <div class="card col"><h3>Texnik talablar</h3><ul style="font-size:14.5px"><li>WAN tezligi va ishonchliligi</li><li>Foydalanuvchi/kompyuter soni</li><li>Mavjud ilovalar (sxema talabi)</li></ul></div>
+      <div class="card col"><h3>Maʼmuriy talablar</h3><ul style="font-size:14.5px"><li>Markaziy yoki taqsimlangan IT</li><li>Avtonomiya vs izolyatsiya</li><li>Vakolatlar matritsasi</li></ul></div>
+      <div class="card col"><h3>Natija (hujjat)</h3><ul style="font-size:14.5px"><li>Oʻrmon/domen diagrammasi</li><li>Nomlash standarti</li><li>OU va GPO xaritasi</li></ul></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 20. ORMON DIZAYN MODELLARI ===================== -->
+<section class="slide">
+  <div class="tag">09 · Metodologiya</div>
+  <h2>Oʻrmon dizayn modellari</h2>
+  <div class="body row" style="gap:18px">
+    <div class="col card" style="border-top:4px solid var(--cy)">
+      <h3>Tashkiliy oʻrmon</h3>
+      <p class="mut" style="font-size:14.5px;margin-top:0">Organizational forest model</p>
+      <svg width="100%" height="110" viewBox="0 0 300 110"><ellipse cx="150" cy="55" rx="140" ry="50" fill="rgba(56,189,248,.08)" stroke="#38bdf8" stroke-dasharray="5 4"/><use href="#tri" x="70" y="18" width="70" height="58"/><use href="#tri" x="160" y="18" width="70" height="58"/><text x="150" y="98" text-anchor="middle" fill="#7dd3fc" font-size="12">foydalanuvchi + resurslar</text></svg>
+      <p style="font-size:15px">Foydalanuvchilar ham, resurslar ham bitta oʻrmonda. <b>Eng keng tarqalgan</b>; avtonomiya beradi.</p>
+    </div>
+    <div class="col card" style="border-top:4px solid var(--vi)">
+      <h3>Resurs oʻrmoni</h3>
+      <p class="mut" style="font-size:14.5px;margin-top:0">Resource forest model</p>
+      <svg width="100%" height="110" viewBox="0 0 300 110"><ellipse cx="75" cy="50" rx="68" ry="44" fill="rgba(56,189,248,.08)" stroke="#38bdf8" stroke-dasharray="5 4"/><ellipse cx="225" cy="50" rx="68" ry="44" fill="rgba(139,92,246,.1)" stroke="#8b5cf6" stroke-dasharray="5 4"/><use href="#tri" x="45" y="20" width="60" height="50"/><use href="#tri2" x="195" y="20" width="60" height="50"/><line x1="140" y1="50" x2="160" y2="50" stroke="#f472b6" stroke-width="3" marker-end="url(#arrP)"/><text x="75" y="104" text-anchor="middle" fill="#7dd3fc" font-size="11">userlar</text><text x="225" y="104" text-anchor="middle" fill="#c4b5fd" font-size="11">serverlar</text></svg>
+      <p style="font-size:15px">Resurslar alohida oʻrmonda, foydalanuvchilar trust orqali kiradi. Muhim xizmatlarni ajratish uchun.</p>
+    </div>
+    <div class="col card" style="border-top:4px solid var(--rd)">
+      <h3>Cheklangan kirish oʻrmoni</h3>
+      <p class="mut" style="font-size:14.5px;margin-top:0">Restricted access forest</p>
+      <svg width="100%" height="110" viewBox="0 0 300 110"><ellipse cx="75" cy="50" rx="68" ry="44" fill="rgba(56,189,248,.08)" stroke="#38bdf8" stroke-dasharray="5 4"/><ellipse cx="225" cy="50" rx="68" ry="44" fill="rgba(239,68,68,.1)" stroke="#ef4444" stroke-width="2"/><use href="#tri" x="45" y="20" width="60" height="50"/><use href="#tri4" x="195" y="20" width="60" height="50"/><line x1="145" y1="35" x2="155" y2="65" stroke="#ef4444" stroke-width="3"/><line x1="155" y1="35" x2="145" y2="65" stroke="#ef4444" stroke-width="3"/><text x="225" y="104" text-anchor="middle" fill="#fca5a5" font-size="11">trust yoʻq</text></svg>
+      <p style="font-size:15px">Toʻliq <b>izolyatsiya</b>: trust yoʻq. Davlat siri, bank protsessing kabi tizimlar uchun.</p>
+    </div>
+  </div>
+  <div class="row" style="margin-top:16px;gap:16px">
+    <div class="card col" style="padding:12px 18px"><b style="color:#86efac">Bitta oʻrmon tanlang, agar:</b> <span class="mut" style="font-size:15px">yagona IT boshqaruv, umumiy sxema talabi, oddiy boshqaruv kerak.</span></div>
+    <div class="card col" style="padding:12px 18px"><b style="color:#fcd34d">Koʻp oʻrmon tanlang, agar:</b> <span class="mut" style="font-size:15px">huquqiy izolyatsiya, mustaqil sxema yoki ishonchsiz adminlar mavjud.</span></div>
+  </div>
+</section>
+
+<!-- ===================== 21. DOMEN MODELLARI ===================== -->
+<section class="slide">
+  <div class="tag">09 · Metodologiya</div>
+  <h2>Domen dizayn modellari: bitta yoki bir nechta?</h2>
+  <div class="body row">
+    <div class="col">
+      <table style="font-size:15px">
+        <tr><th>Mezon</th><th>Bitta domen</th><th>Mintaqaviy domenlar</th></tr>
+        <tr><td><b>Boshqaruv</b></td><td><span class="pill g">Oddiy</span></td><td><span class="pill a">Murakkab</span></td></tr>
+        <tr><td><b>DC soni</b></td><td>Kam</td><td>Koʻp (har domenga &gt;=2)</td></tr>
+        <tr><td><b>Replikatsiya</b></td><td>Barcha DC larga butun domen</td><td>Domen maʼlumoti mintaqada qoladi</td></tr>
+        <tr><td><b>Parol siyosati</b></td><td>Bitta (+FGPP)</td><td>Har domenda alohida</td></tr>
+        <tr><td><b>Obyektlarni koʻchirish</b></td><td>OU orasida oson</td><td>ADMT talab qiladi</td></tr>
+        <tr><td><b>Mos keladi</b></td><td>Koʻpchilik tashkilotlar</td><td>Sekin WAN, katta hajm, til/qonun farqi</td></tr>
+      </table>
+      <p class="note" style="margin-top:14px">Microsoft tavsiyasi: <b>imkon qadar bitta domen</b>. Domen qoʻshish faqat aniq texnik yoki huquqiy sabab boʻlganda oqlanadi.</p>
+    </div>
+    <div class="col" style="flex:.85">
+      <div class="card" style="margin-bottom:14px">
+        <h3>Qaror daraxti</h3>
+        <svg width="100%" height="300" viewBox="0 0 440 300">
+          <g font-size="13" text-anchor="middle">
+            <rect x="95" y="5" width="250" height="44" rx="10" fill="#1e3a8a" stroke="#60a5fa"/><text x="220" y="32" fill="#fff" font-weight="700">Izolyatsiya talab qilinadimi?</text>
+            <rect x="0" y="95" width="160" height="40" rx="10" fill="#7f1d1d" stroke="#f87171"/><text x="80" y="120" fill="#fff">Ha » alohida oʻrmon</text>
+            <rect x="225" y="85" width="215" height="58" rx="10" fill="#312e81" stroke="#a78bfa"/><text x="332" y="108" fill="#fff" font-weight="700">WAN sekinmi yoki</text><text x="332" y="127" fill="#fff" font-weight="700">turli parol siyosati?</text>
+            <rect x="160" y="200" width="140" height="58" rx="10" fill="#78350f" stroke="#fbbf24"/><text x="230" y="225" fill="#fff">Ha » mintaqaviy</text><text x="230" y="243" fill="#fff">bola domenlar</text>
+            <rect x="320" y="200" width="120" height="58" rx="10" fill="#14532d" stroke="#4ade80"/><text x="380" y="225" fill="#fff">Yoʻq » bitta</text><text x="380" y="243" fill="#fff">domen + OU</text>
+          </g>
+          <g stroke="#94a3b8" stroke-width="2" fill="none" marker-end="url(#arr)">
+            <path d="M160 49 L90 93"/><path d="M280 49 L320 83"/><path d="M300 143 L240 198"/><path d="M360 143 L378 198"/>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 22. KEYS TALABLAR ===================== -->
+<section class="slide">
+  <div class="tag">10 · Amaliy keys</div>
+  <h2>Keys: «UzTech Group» xoldingi — talablar</h2>
+  <div class="body row">
+    <div class="col" style="flex:1.1">
+      <div class="row" style="gap:12px;margin-bottom:16px">
+        <div class="card col" style="text-align:center"><div class="big grad">3 200</div><div class="mut">foydalanuvchi</div></div>
+        <div class="card col" style="text-align:center"><div class="big grad">3</div><div class="mut">shahar (filial)</div></div>
+        <div class="card col" style="text-align:center"><div class="big grad">2</div><div class="mut">yuridik shaxs</div></div>
+      </div>
+      <table style="font-size:15px">
+        <tr><th>Joylashuv</th><th>Foydalanuvchi</th><th>WAN</th><th>IT xodimi</th></tr>
+        <tr><td><b>Toshkent</b> (bosh ofis)</td><td>2 000</td><td>—</td><td>Markaziy IT</td></tr>
+        <tr><td><b>Samarqand</b></td><td>800</td><td>100 Mbit/s</td><td>Mahalliy admin</td></tr>
+        <tr><td><b>Fargʻona</b></td><td>250</td><td>20 Mbit/s</td><td>Yoʻq</td></tr>
+        <tr><td><b>UzBank</b> (shoʻba bank)</td><td>150</td><td>Toshkentda</td><td>Alohida IT</td></tr>
+      </table>
+    </div>
+    <div class="col">
+      <div class="card acc" style="margin-bottom:12px"><h3>T1 · Yagona tizimga kirish</h3><p class="mut" style="margin:0;font-size:15px">Barcha xodimlar bitta login bilan umumiy portal va pochtaga kirsin</p></div>
+      <div class="card acc" style="margin-bottom:12px;border-left-color:#8b5cf6"><h3>T2 · Bank boshqaruvi mustaqil</h3><p class="mut" style="margin:0;font-size:15px">Bank adminlari oʻz domenini boshqarsin, alohida DNS nomi: <code>uzbank.uz</code></p></div>
+      <div class="card acc" style="margin-bottom:12px;border-left-color:#f59e0b"><h3>T3 · Samarqand avtonomiyasi</h3><p class="mut" style="margin:0;font-size:15px">Mahalliy admin faqat oʻz filialini boshqarsin, alohida parol siyosati</p></div>
+      <div class="card acc" style="border-left-color:#ef4444"><h3>T4 · Fargʻonada xavfsizlik</h3><p class="mut" style="margin:0;font-size:15px">Server jismoniy himoyasiz, IT xodimi yoʻq</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 23. KEYS YECHIM ===================== -->
+<section class="slide">
+  <div class="tag">10 · Amaliy keys</div>
+  <h2>Yechim: bitta oʻrmon, ikki daraxt, uchta domen</h2>
+  <div class="body row">
+    <svg width="760" height="500" viewBox="0 0 760 500">
+      <rect x="5" y="5" width="750" height="490" rx="24" fill="rgba(56,189,248,.05)" stroke="#38bdf8" stroke-width="2.5"/>
+      <text x="25" y="36" fill="#7dd3fc" font-size="16" font-weight="800">OʻRMON: uztech.uz · FFL Windows Server 2025</text>
+      <rect x="25" y="55" width="455" height="420" rx="18" fill="rgba(59,130,246,.06)" stroke="#3b82f6" stroke-dasharray="6 5"/>
+      <text x="40" y="78" fill="#93c5fd" font-size="13" font-weight="700">Daraxt 1 — uztech.uz</text>
+      <rect x="500" y="55" width="235" height="420" rx="18" fill="rgba(139,92,246,.06)" stroke="#8b5cf6" stroke-dasharray="6 5"/>
+      <text x="515" y="78" fill="#c4b5fd" font-size="13" font-weight="700">Daraxt 2 — uzbank.uz</text>
+      <line x1="250" y1="200" x2="250" y2="290" stroke="#7dd3fc" stroke-width="2.5" marker-end="url(#arr)" marker-start="url(#arr)"/>
+      <use href="#tri" x="165" y="85" width="170" height="140" filter="url(#glow)"/>
+      <text x="250" y="180" text-anchor="middle" fill="#fff" font-size="16" font-weight="800">uztech.uz</text>
+      <text x="250" y="200" text-anchor="middle" fill="#dbeafe" font-size="11">Toshkent + Fargʻona (OU)</text>
+      <use href="#tri4" x="185" y="285" width="130" height="108" filter="url(#glow)"/>
+      <text x="250" y="365" text-anchor="middle" fill="#fff" font-size="14" font-weight="800">sam.uztech.uz</text>
+      <text x="250" y="383" text-anchor="middle" fill="#fff7ed" font-size="10">T3: mustaqil siyosat</text>
+      <use href="#tri2" x="545" y="140" width="150" height="124" filter="url(#glow)"/>
+      <text x="620" y="225" text-anchor="middle" fill="#fff" font-size="15" font-weight="800">uzbank.uz</text>
+      <text x="620" y="244" text-anchor="middle" fill="#f3e8ff" font-size="10">T2: alohida IT</text>
+      <path d="M318 160 Q440 110 572 190" fill="none" stroke="#f472b6" stroke-width="3" stroke-dasharray="7 5" marker-end="url(#arrP)" marker-start="url(#arrP)"/>
+      <text x="440" y="118" text-anchor="middle" fill="#f9a8d4" font-size="12" font-weight="700">tree-root trust</text>
+      <text x="262" y="250" fill="#7dd3fc" font-size="11">parent-child</text>
+      <g font-size="12">
+        <rect x="45" y="410" width="135" height="50" rx="10" fill="#0f172a" stroke="#22c55e"/><use href="#srv" x="52" y="417" width="28" height="36"/><text x="85" y="432" fill="#fff" font-weight="700">TSH-DC01/02</text><text x="85" y="449" fill="#86efac">GC, FSMO</text>
+        <rect x="190" y="410" width="135" height="50" rx="10" fill="#0f172a" stroke="#fbbf24"/><use href="#srv" x="197" y="417" width="28" height="36"/><text x="230" y="432" fill="#fff" font-weight="700">SAM-DC01/02</text><text x="230" y="449" fill="#fcd34d">GC</text>
+        <rect x="335" y="410" width="135" height="50" rx="10" fill="#0f172a" stroke="#ef4444"/><use href="#srv" x="342" y="417" width="28" height="36"/><text x="375" y="432" fill="#fff" font-weight="700">FER-RODC01</text><text x="375" y="449" fill="#fca5a5">T4: RODC</text>
+        <rect x="550" y="410" width="160" height="50" rx="10" fill="#0f172a" stroke="#a78bfa"/><use href="#srv" x="557" y="417" width="28" height="36"/><text x="590" y="432" fill="#fff" font-weight="700">BANK-DC01/02</text><text x="590" y="449" fill="#c4b5fd">GC, FSMO</text>
+      </g>
+    </svg>
+    <div class="col">
+      <div class="card" style="margin-bottom:10px"><h3 style="font-size:16px">Nega bitta oʻrmon?</h3><p class="mut" style="margin:0;font-size:14px">T1 — umumiy GC va tranzitiv trust orqali yagona kirish. Toʻliq izolyatsiya talab qilinmagan.</p></div>
+      <div class="card" style="margin-bottom:10px"><h3 style="font-size:16px">Nega yangi daraxt?</h3><p class="mut" style="margin:0;font-size:14px">T2 — bank boshqa DNS nomiga (<code>uzbank.uz</code>) muhtoj; domen chegarasi alohida Domain Admins beradi.</p></div>
+      <div class="card" style="margin-bottom:10px"><h3 style="font-size:16px">Nega bola domen?</h3><p class="mut" style="margin:0;font-size:14px">T3 — alohida maʼmuriyat va domen darajasidagi siyosat.</p></div>
+      <div class="card"><h3 style="font-size:16px">Nega Fargʻona — OU + RODC?</h3><p class="mut" style="margin:0;font-size:14px">T4 — 250 kishi uchun domen ortiqcha; RODC parollarni keshlamaydi (PRP bilan cheklanadi).</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 24. KEYS OU ===================== -->
+<section class="slide">
+  <div class="tag">10 · Amaliy keys</div>
+  <h2>uztech.uz domenining OU tuzilmasi</h2>
+  <div class="body row">
+    <div class="col">
+      <pre style="font-size:14.5px;line-height:1.6"><div class="bar"><i></i><i></i><i></i><span>Active Directory Users and Computers — uztech.uz</span></div><span class="o">uztech.uz</span>
++-- <span class="v">_Admin</span>                    <span class="c"># Tier 0 — faqat Domain Admins</span>
+|   +-- <span class="k">Accounts</span>              <span class="c"># adm-* imtiyozli hisoblar</span>
+|   +-- <span class="k">Groups</span>
+|   \-- <span class="k">PAW</span>                   <span class="c"># Privileged Access Workstations</span>
++-- <span class="s">Toshkent</span>
+|   +-- <span class="k">Users</span> : IT · HR · Moliya · Savdo
+|   +-- <span class="k">Computers</span> : Desktops · Laptops
+|   +-- <span class="k">Servers</span>
+|   \-- <span class="k">Groups</span>
++-- <span class="s">Fargona</span>                   <span class="c"># RODC filiali</span>
+|   +-- <span class="k">Users</span>
+|   \-- <span class="k">Computers</span>
++-- <span class="p">Service Accounts</span>          <span class="c"># gMSA / dMSA</span>
+\-- <span class="p">Disabled</span>                  <span class="c"># 90 kunlik saqlash</span></pre>
+    </div>
+    <div class="col" style="flex:.8">
+      <table style="font-size:14.5px">
+        <tr><th>OU</th><th>Bogʻlangan GPO</th></tr>
+        <tr><td><b>uztech.uz</b></td><td>Default Domain Policy, Parol: 14 belgi</td></tr>
+        <tr><td><b>_Admin</b></td><td>T0 — Deny logon to T1/T2</td></tr>
+        <tr><td><b>*/Computers</b></td><td>BitLocker, Defender, LAPS</td></tr>
+        <tr><td><b>*/Servers</b></td><td>Server Baseline, Audit</td></tr>
+        <tr><td><b>*/Users</b></td><td>Drive mapping, Desktop</td></tr>
+      </table>
+      <div class="card" style="margin-top:14px">
+        <h3>Guruhlarni nomlash (AGDLP)</h3>
+        <p style="font-size:14.5px;margin:0" class="mut"><b>A</b>ccount » <b>G</b>lobal » <b>D</b>omain <b>L</b>ocal » <b>P</b>ermission</p>
+        <p style="font-size:14px;margin:8px 0 0"><code>GG_TSH_Moliya</code> » <code>DL_FS01_Moliya_RW</code> » NTFS</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 25. SAYTLAR ===================== -->
+<section class="slide">
+  <div class="tag">11 · Fizik tuzilma</div>
+  <h2>Saytlar, subnetlar va replikatsiya topologiyasi</h2>
+  <div class="body row">
+    <svg width="690" height="480" viewBox="0 0 690 480">
+      <g>
+        <rect x="10" y="10" width="300" height="200" rx="18" fill="rgba(59,130,246,.08)" stroke="#3b82f6" stroke-width="2"/>
+        <text x="28" y="38" fill="#93c5fd" font-size="15" font-weight="800">Sayt: Toshkent</text><text x="292" y="38" fill="#9aa7c7" font-size="12" text-anchor="end">10.10.0.0/16</text>
+        <use href="#srv" x="40" y="60" width="56" height="70"/><use href="#srv" x="200" y="60" width="56" height="70"/>
+        <text x="68" y="150" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">TSH-DC01</text><text x="228" y="150" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">TSH-DC02</text>
+        <line x1="100" y1="95" x2="196" y2="95" stroke="#fbbf24" stroke-width="2.5" marker-end="url(#arrA)" marker-start="url(#arrA)"/>
+        <text x="148" y="85" text-anchor="middle" fill="#fcd34d" font-size="11">intra-site</text>
+        <text x="160" y="185" text-anchor="middle" fill="#9aa7c7" font-size="12">bildirishnoma: ~15 s · siqilmagan</text>
+        <rect x="200" y="155" width="96" height="20" rx="6" fill="#14532d"/><text x="248" y="169" text-anchor="middle" fill="#86efac" font-size="11">Bridgehead</text>
+      </g>
+      <g>
+        <rect x="380" y="10" width="300" height="200" rx="18" fill="rgba(245,158,11,.08)" stroke="#f59e0b" stroke-width="2"/>
+        <text x="398" y="38" fill="#fcd34d" font-size="15" font-weight="800">Sayt: Samarqand</text><text x="662" y="38" fill="#9aa7c7" font-size="12" text-anchor="end">10.20.0.0/16</text>
+        <use href="#srv" x="420" y="60" width="56" height="70"/><use href="#srv" x="580" y="60" width="56" height="70"/>
+        <text x="448" y="150" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">SAM-DC01</text><text x="608" y="150" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">SAM-DC02</text>
+        <line x1="480" y1="95" x2="576" y2="95" stroke="#fbbf24" stroke-width="2.5" marker-end="url(#arrA)" marker-start="url(#arrA)"/>
+        <rect x="400" y="155" width="96" height="20" rx="6" fill="#14532d"/><text x="448" y="169" text-anchor="middle" fill="#86efac" font-size="11">Bridgehead</text>
+      </g>
+      <g>
+        <rect x="195" y="300" width="300" height="165" rx="18" fill="rgba(239,68,68,.08)" stroke="#ef4444" stroke-width="2"/>
+        <text x="213" y="328" fill="#fca5a5" font-size="15" font-weight="800">Sayt: Fargʻona</text><text x="477" y="328" fill="#9aa7c7" font-size="12" text-anchor="end">10.30.0.0/16</text>
+        <use href="#srv" x="317" y="345" width="56" height="70"/>
+        <text x="345" y="435" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">FER-RODC01</text>
+        <text x="345" y="453" text-anchor="middle" fill="#9aa7c7" font-size="11">faqat kiruvchi replikatsiya</text>
+      </g>
+      <path d="M310 110 H380" stroke="#38bdf8" stroke-width="4" marker-end="url(#arr)" marker-start="url(#arr)"/>
+      <rect x="295" y="122" width="100" height="40" rx="8" fill="#0f172a" stroke="#38bdf8"/><text x="345" y="138" text-anchor="middle" fill="#7dd3fc" font-size="11" font-weight="700">TSH-SAM</text><text x="345" y="153" text-anchor="middle" fill="#9aa7c7" font-size="10">cost 100 · 60 min</text>
+      <path d="M160 210 L300 300" stroke="#38bdf8" stroke-width="4" marker-end="url(#arr)"/>
+      <rect x="120" y="240" width="110" height="40" rx="8" fill="#0f172a" stroke="#38bdf8"/><text x="175" y="256" text-anchor="middle" fill="#7dd3fc" font-size="11" font-weight="700">TSH-FER</text><text x="175" y="271" text-anchor="middle" fill="#9aa7c7" font-size="10">cost 200 · 180 min</text>
+      <path d="M530 210 L420 300" stroke="#64748b" stroke-width="2" stroke-dasharray="5 5"/>
+      <text x="520" y="265" fill="#9aa7c7" font-size="11">cost 300 (zaxira)</text>
+    </svg>
+    <div class="col">
+      <div class="card" style="margin-bottom:10px"><h3 style="font-size:16px">KCC</h3><p class="mut" style="margin:0;font-size:14px">Knowledge Consistency Checker har 15 daqiqada replikatsiya topologiyasini avtomatik quradi; ISTG saytlararo ulanishlarni boshqaradi.</p></div>
+      <div class="card" style="margin-bottom:10px"><h3 style="font-size:16px">Site Link Cost</h3><p class="mut" style="margin:0;font-size:14px">Standart narx 100, interval 180 daqiqa (minimal 15). Kichik narx = ustuvor yoʻl.</p></div>
+      <pre style="font-size:12.5px;padding:12px 14px"><span class="k">New-ADReplicationSite</span> <span class="s">Samarqand</span>
+<span class="k">New-ADReplicationSubnet</span> <span class="p">-Name</span> <span class="s">10.20.0.0/16</span> `
+   <span class="p">-Site</span> <span class="s">Samarqand</span>
+<span class="k">New-ADReplicationSiteLink</span> <span class="s">TSH-SAM</span> `
+   <span class="p">-SitesIncluded</span> Toshkent,Samarqand `
+   <span class="p">-Cost</span> 100 <span class="p">-ReplicationFrequencyInMinutes</span> 60</pre>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 26. PS: ORMON YARATISH ===================== -->
+<section class="slide">
+  <div class="tag">12 · Amaliy joriy etish (PowerShell)</div>
+  <h2>1-qadam: AD DS rolini oʻrnatish va oʻrmon yaratish</h2>
+  <div class="body row">
+    <div class="col" style="flex:1.45">
+      <pre><div class="bar"><i></i><i></i><i></i><span>TSH-DC01 · Administrator: Windows PowerShell</span></div><span class="c"># 0. Statik IP va server nomi (oldindan)</span>
+<span class="k">New-NetIPAddress</span> <span class="p">-InterfaceAlias</span> <span class="s">"Ethernet"</span> <span class="p">-IPAddress</span> 10.10.0.10 `
+    <span class="p">-PrefixLength</span> 16 <span class="p">-DefaultGateway</span> 10.10.0.1
+<span class="k">Rename-Computer</span> <span class="p">-NewName</span> <span class="s">"TSH-DC01"</span> <span class="p">-Restart</span>
+
+<span class="c"># 1. AD DS rolini oʻrnatish</span>
+<span class="k">Install-WindowsFeature</span> <span class="p">-Name</span> AD-Domain-Services <span class="p">-IncludeManagementTools</span>
+
+<span class="c"># 2. Yangi oʻrmon yaratish (eski DC lar boʻlsa: "WinThreshold" = 2016)</span>
+<span class="k">Import-Module</span> ADDSDeployment
+<span class="k">Install-ADDSForest</span> `
+    <span class="p">-DomainName</span>          <span class="s">"uztech.uz"</span> `
+    <span class="p">-DomainNetbiosName</span>   <span class="s">"UZTECH"</span> `
+    <span class="p">-ForestMode</span>          <span class="s">"Win2025"</span> `
+    <span class="p">-DomainMode</span>          <span class="s">"Win2025"</span> `
+    <span class="p">-InstallDns</span>:<span class="v">$true</span> `
+    <span class="p">-DatabasePath</span>        <span class="s">"C:\Windows\NTDS"</span> `
+    <span class="p">-LogPath</span>             <span class="s">"C:\Windows\NTDS"</span> `
+    <span class="p">-SysvolPath</span>          <span class="s">"C:\Windows\SYSVOL"</span> `
+    <span class="p">-SafeModeAdministratorPassword</span> (<span class="k">Read-Host</span> <span class="p">-AsSecureString</span> <span class="s">"DSRM parol"</span>) `
+    <span class="p">-Force</span></pre>
+    </div>
+    <div class="col">
+      <div class="card" style="margin-bottom:12px"><h3>Natija</h3><ul style="font-size:14.5px"><li>Yangi oʻrmon <b>uztech.uz</b> va uning ildiz domeni</li><li>DNS zona va <code>_msdcs</code> AD-integratsiyalangan</li><li>DC01: GC + barcha <b>5 FSMO</b> roli</li><li>Server avtomatik qayta yuklanadi</li></ul></div>
+      <div class="card" style="border-left:4px solid var(--am)"><h3>DSRM paroli</h3><p class="mut" style="margin:0;font-size:14.5px">Directory Services Restore Mode — bazani tiklash uchun. Uni xavfsiz joyda (vault) saqlang, skript ichida ochiq yozmang.</p></div>
+      <div class="card" style="margin-top:12px"><h3>Sinov rejimi</h3><p class="mut" style="margin:0;font-size:14.5px"><code>Test-ADDSForestInstallation</code> — oʻzgarishsiz tekshiradi.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 27. PS: BOLA DOMEN VA DARAXT ===================== -->
+<section class="slide">
+  <div class="tag">12 · Amaliy joriy etish (PowerShell)</div>
+  <h2>2-qadam: bola domen, yangi daraxt va qoʻshimcha DC</h2>
+  <div class="body row">
+    <div class="col">
+      <pre style="font-size:13px"><div class="bar"><i></i><i></i><i></i><span>SAM-DC01 — bola domen (ChildDomain)</span></div><span class="k">Install-WindowsFeature</span> AD-Domain-Services <span class="p">-IncludeManagementTools</span>
+
+<span class="k">Install-ADDSDomain</span> `
+    <span class="p">-DomainType</span>           ChildDomain `
+    <span class="p">-ParentDomainName</span>     <span class="s">"uztech.uz"</span> `
+    <span class="p">-NewDomainName</span>        <span class="s">"sam"</span> `
+    <span class="p">-NewDomainNetbiosName</span> <span class="s">"SAMUZTECH"</span> `
+    <span class="p">-DomainMode</span>           <span class="s">"Win2025"</span> `
+    <span class="p">-SiteName</span>             <span class="s">"Samarqand"</span> `
+    <span class="p">-InstallDns</span> <span class="p">-CreateDnsDelegation</span> `
+    <span class="p">-Credential</span> (<span class="k">Get-Credential</span> <span class="s">"UZTECH\Administrator"</span>) `
+    <span class="p">-SafeModeAdministratorPassword</span> (<span class="k">Read-Host</span> <span class="p">-AsSecureString</span>)
+<span class="c"># » sam.uztech.uz, parent-child trust avtomatik</span></pre>
+      <pre style="font-size:13px;margin-top:12px"><div class="bar"><i></i><i></i><i></i><span>TSH-DC02 — mavjud domenga qoʻshimcha DC</span></div><span class="k">Install-ADDSDomainController</span> <span class="p">-DomainName</span> <span class="s">"uztech.uz"</span> `
+    <span class="p">-SiteName</span> <span class="s">"Toshkent"</span> <span class="p">-InstallDns</span> <span class="p">-NoGlobalCatalog</span>:<span class="v">$false</span> `
+    <span class="p">-Credential</span> (<span class="k">Get-Credential</span>)</pre>
+    </div>
+    <div class="col">
+      <pre style="font-size:13px"><div class="bar"><i></i><i></i><i></i><span>BANK-DC01 — yangi daraxt (TreeDomain)</span></div><span class="c"># ParentDomainName = oʻrmon ildizi, NewDomainName = toʻliq FQDN</span>
+<span class="k">Install-ADDSDomain</span> `
+    <span class="p">-DomainType</span>           TreeDomain `
+    <span class="p">-ParentDomainName</span>     <span class="s">"uztech.uz"</span> `
+    <span class="p">-NewDomainName</span>        <span class="s">"uzbank.uz"</span> `
+    <span class="p">-NewDomainNetbiosName</span> <span class="s">"UZBANK"</span> `
+    <span class="p">-InstallDns</span> `
+    <span class="p">-Credential</span> (<span class="k">Get-Credential</span> <span class="s">"UZTECH\Administrator"</span>) `
+    <span class="p">-SafeModeAdministratorPassword</span> (<span class="k">Read-Host</span> <span class="p">-AsSecureString</span>)
+<span class="c"># » tree-root trust avtomatik yaratiladi</span></pre>
+      <pre style="font-size:13px;margin-top:12px"><div class="bar"><i></i><i></i><i></i><span>FER-RODC01 — faqat oʻqish uchun DC</span></div><span class="k">Install-ADDSDomainController</span> <span class="p">-DomainName</span> <span class="s">"uztech.uz"</span> `
+    <span class="p">-ReadOnlyReplica</span> <span class="p">-SiteName</span> <span class="s">"Fargona"</span> `
+    <span class="p">-AllowPasswordReplicationAccountName</span> <span class="s">"GG_FER_Users"</span> `
+    <span class="p">-DelegatedAdministratorAccountName</span> <span class="s">"GG_FER_RODC_Admins"</span> `
+    <span class="p">-InstallDns</span> <span class="p">-Credential</span> (<span class="k">Get-Credential</span>)</pre>
+    </div>
+  </div>
+  <p class="note" style="margin-top:12px">Oʻrmonga domen qoʻshish uchun <b>Enterprise Admins</b> aʼzosi hisobi va <b>Domain Naming Master</b> mavjudligi talab qilinadi.</p>
+</section>
+
+<!-- ===================== 28. PS: OU, USER, GROUP ===================== -->
+<section class="slide">
+  <div class="tag">12 · Amaliy joriy etish (PowerShell)</div>
+  <h2>3-qadam: OU tuzilmasi, foydalanuvchilar va guruhlar</h2>
+  <div class="body row">
+    <div class="col" style="flex:1.2">
+      <pre style="font-size:12.8px;line-height:1.45"><div class="bar"><i></i><i></i><i></i><span>Build-OUStructure.ps1</span></div><span class="v">$base</span> = (<span class="k">Get-ADDomain</span>).DistinguishedName      <span class="c"># DC=uztech,DC=uz</span>
+<span class="v">$sites</span> = <span class="s">"Toshkent"</span>, <span class="s">"Fargona"</span>
+<span class="v">$sub</span>   = <span class="s">"Users"</span>, <span class="s">"Computers"</span>, <span class="s">"Servers"</span>, <span class="s">"Groups"</span>
+
+<span class="k">New-ADOrganizationalUnit</span> <span class="p">-Name</span> <span class="s">"_Admin"</span> <span class="p">-Path</span> <span class="v">$base</span>
+<span class="k">foreach</span> (<span class="v">$s</span> <span class="k">in</span> <span class="v">$sites</span>) {
+    <span class="k">New-ADOrganizationalUnit</span> <span class="p">-Name</span> <span class="v">$s</span> <span class="p">-Path</span> <span class="v">$base</span> `
+        <span class="p">-ProtectedFromAccidentalDeletion</span> <span class="v">$true</span>
+    <span class="k">foreach</span> (<span class="v">$o</span> <span class="k">in</span> <span class="v">$sub</span>) {
+        <span class="k">New-ADOrganizationalUnit</span> <span class="p">-Name</span> <span class="v">$o</span> <span class="p">-Path</span> <span class="s">"OU=$s,$base"</span>
+    }
+}
+
+<span class="c"># CSV dan ommaviy foydalanuvchi yaratish</span>
+<span class="k">Import-Csv</span> <span class="s">.\xodimlar.csv</span> | <span class="k">ForEach-Object</span> {
+    <span class="k">New-ADUser</span> <span class="p">-Name</span> <span class="s">"$($_.Ism) $($_.Familiya)"</span> `
+      <span class="p">-GivenName</span> <span class="v">$_</span>.Ism <span class="p">-Surname</span> <span class="v">$_</span>.Familiya `
+      <span class="p">-SamAccountName</span> <span class="v">$_</span>.Login `
+      <span class="p">-UserPrincipalName</span> <span class="s">"$($_.Login)@uztech.uz"</span> `
+      <span class="p">-Department</span> <span class="v">$_</span>.Bolim `
+      <span class="p">-Path</span> <span class="s">"OU=Users,OU=$($_.Filial),$base"</span> `
+      <span class="p">-AccountPassword</span> (<span class="k">ConvertTo-SecureString</span> <span class="v">$_</span>.TempPass <span class="p">-AsPlainText</span> <span class="p">-Force</span>) `
+      <span class="p">-ChangePasswordAtLogon</span> <span class="v">$true</span> <span class="p">-Enabled</span> <span class="v">$true</span>
+}</pre>
+    </div>
+    <div class="col">
+      <pre style="font-size:13.3px"><div class="bar"><i></i><i></i><i></i><span>Guruhlar (AGDLP) va delegatsiya</span></div><span class="v">$g</span> = <span class="s">"OU=Groups,OU=Toshkent,$base"</span>
+<span class="k">New-ADGroup</span> <span class="s">GG_TSH_Moliya</span> <span class="p">-GroupScope</span> Global `
+    <span class="p">-GroupCategory</span> Security <span class="p">-Path</span> <span class="v">$g</span>
+<span class="k">New-ADGroup</span> <span class="s">DL_FS01_Moliya_RW</span> <span class="p">-GroupScope</span> DomainLocal `
+    <span class="p">-GroupCategory</span> Security <span class="p">-Path</span> <span class="v">$g</span>
+<span class="k">Add-ADGroupMember</span> <span class="s">DL_FS01_Moliya_RW</span> <span class="p">-Members</span> <span class="s">GG_TSH_Moliya</span>
+
+<span class="c"># Moliya boʻlimi xodimlarini global guruhga</span>
+<span class="k">Get-ADUser</span> <span class="p">-Filter</span> <span class="s">"Department -eq 'Moliya'"</span> `
+    <span class="p">-SearchBase</span> <span class="s">"OU=Toshkent,$base"</span> |
+  <span class="k">ForEach-Object</span> { <span class="k">Add-ADGroupMember</span> <span class="s">GG_TSH_Moliya</span> <span class="p">-Members</span> <span class="v">$_</span> }
+
+<span class="c"># Helpdesk ga parol tiklash huquqini berish</span>
+<span class="k">dsacls</span> <span class="s">"OU=Users,OU=Toshkent,$base"</span> /I:S `
+  /G <span class="s">"UZTECH\GG_Helpdesk:CA;Reset Password;user"</span></pre>
+      <div class="card" style="margin-top:12px;padding:12px 16px"><p class="mut" style="margin:0;font-size:14px"><code>xodimlar.csv</code>: Ism, Familiya, Login, Bolim, Filial, TempPass. Vaqtinchalik parol birinchi kirishda almashtiriladi; CSV faylni ishdan soʻng oʻchiring.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 29. PS: TRUST VA TEKSHIRISH ===================== -->
+<section class="slide">
+  <div class="tag">12 · Amaliy joriy etish (PowerShell)</div>
+  <h2>4-qadam: forest trust va sogʻliqni tekshirish</h2>
+  <div class="body row">
+    <div class="col">
+      <pre style="font-size:13.3px"><div class="bar"><i></i><i></i><i></i><span>partner.uz bilan forest trust</span></div><span class="c"># 1) Ikkala tomonda DNS conditional forwarder</span>
+<span class="k">Add-DnsServerConditionalForwarderZone</span> <span class="p">-Name</span> <span class="s">"partner.uz"</span> `
+    <span class="p">-MasterServers</span> 10.50.0.10 <span class="p">-ReplicationScope</span> Forest
+
+<span class="c"># 2) Ikki tomonlama forest trust (.NET API)</span>
+<span class="v">$cred</span>   = <span class="k">Get-Credential</span> <span class="s">"PARTNER\Administrator"</span>
+<span class="v">$ctx</span>    = <span class="k">New-Object</span> System.DirectoryServices.ActiveDirectory.DirectoryContext(
+            <span class="s">"Forest"</span>, <span class="s">"partner.uz"</span>, <span class="v">$cred</span>.UserName,
+            <span class="v">$cred</span>.GetNetworkCredential().Password)
+<span class="v">$remote</span> = [System.DirectoryServices.ActiveDirectory.Forest]::GetForest(<span class="v">$ctx</span>)
+<span class="v">$local</span>  = [System.DirectoryServices.ActiveDirectory.Forest]::GetCurrentForest()
+<span class="v">$local</span>.CreateTrustRelationship(<span class="v">$remote</span>, <span class="s">"Bidirectional"</span>)
+
+<span class="c"># 3) Trustlarni koʻrish</span>
+<span class="k">Get-ADTrust</span> <span class="p">-Filter</span> * | <span class="k">Select</span> Name, Direction, ForestTransitive
+<span class="k">nltest</span> /domain_trusts /all_trusts /v</pre>
+    </div>
+    <div class="col">
+      <pre style="font-size:13.3px"><div class="bar"><i></i><i></i><i></i><span>Sogʻliqni tekshirish (health check)</span></div><span class="c"># Oʻrmon va domen haqida umumiy maʼlumot</span>
+<span class="k">Get-ADForest</span> | <span class="k">Select</span> Name, ForestMode, Domains, GlobalCatalogs
+<span class="k">Get-ADDomainController</span> <span class="p">-Filter</span> * |
+    <span class="k">Select</span> Name, Site, IsGlobalCatalog, IsReadOnly
+
+<span class="c"># Replikatsiya holati</span>
+<span class="k">repadmin</span> /replsummary
+<span class="k">repadmin</span> /showrepl * /csv | <span class="k">ConvertFrom-Csv</span> |
+    <span class="k">Where-Object</span> { <span class="v">$_</span>.<span class="s">'Number of Failures'</span> <span class="o">-gt</span> 0 }
+
+<span class="c"># DC diagnostikasi</span>
+<span class="k">dcdiag</span> /e /c /q
+<span class="k">dcdiag</span> /test:dns /v
+
+<span class="c"># Vaqt sinxronizatsiyasi (Kerberos ±5 daqiqa)</span>
+<span class="k">w32tm</span> /monitor
+<span class="k">w32tm</span> /query /source</pre>
+      <p class="note" style="margin-top:12px">Kerberos uchun soatlar farqi standart <b>5 daqiqa</b>dan oshmasligi shart; vaqt iyerarxiyasi PDC Emulator orqali quriladi.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 30. XAVFSIZLIK ===================== -->
+<section class="slide">
+  <div class="tag">13 · Xavfsizlik</div>
+  <h2>Xavfsiz AD dizayni: Tier modeli (Tier 0/1/2)</h2>
+  <div class="body row">
+    <svg width="560" height="470" viewBox="0 0 560 470">
+      <polygon points="280,10 400,150 160,150" fill="#7f1d1d" stroke="#f87171" stroke-width="2"/>
+      <text x="280" y="105" text-anchor="middle" fill="#fff" font-size="18" font-weight="800">TIER 0</text>
+      <text x="280" y="128" text-anchor="middle" fill="#fecaca" font-size="11">DC, AD, PKI, ADFS, Entra Connect</text>
+      <polygon points="155,158 405,158 490,300 70,300" fill="#78350f" stroke="#fbbf24" stroke-width="2"/>
+      <text x="280" y="225" text-anchor="middle" fill="#fff" font-size="18" font-weight="800">TIER 1</text>
+      <text x="280" y="250" text-anchor="middle" fill="#fde68a" font-size="12">Serverlar, ilovalar, maʼlumotlar bazalari</text>
+      <polygon points="65,308 495,308 555,460 5,460" fill="#14532d" stroke="#4ade80" stroke-width="2"/>
+      <text x="280" y="380" text-anchor="middle" fill="#fff" font-size="18" font-weight="800">TIER 2</text>
+      <text x="280" y="405" text-anchor="middle" fill="#bbf7d0" font-size="12">Ishchi stansiyalar, foydalanuvchilar, printerlar</text>
+      <g stroke="#e2e8f0" stroke-width="2" fill="none"><path d="M520 60 V420" marker-end="url(#arr)" stroke="#7dd3fc"/></g>
+      <text x="540" y="240" fill="#7dd3fc" font-size="12" transform="rotate(90 540 240)" text-anchor="middle">nazorat faqat yuqoridan pastga</text>
+    </svg>
+    <div class="col">
+      <div class="card" style="margin-bottom:10px"><h3 style="font-size:16px">Asosiy qoida</h3><p class="mut" style="margin:0;font-size:14.5px">Yuqori tier hisobi quyi tier mashinasiga <b>hech qachon kirmaydi</b> (credential theft, Pass-the-Hash oldini olish).</p></div>
+      <div class="card" style="margin-bottom:10px"><h3 style="font-size:16px">Himoya vositalari</h3>
+        <span class="pill r">Protected Users</span><span class="pill a">Windows LAPS</span><span class="pill v">Authentication Policy Silo</span><span class="pill">PAW</span><span class="pill g">gMSA / dMSA</span><span class="pill">LDAP signing</span><span class="pill r">NTLM ni cheklash</span>
+      </div>
+      <pre style="font-size:12.8px;padding:12px 14px"><span class="c"># Adminlarni Protected Users ga qoʻshish</span>
+<span class="k">Add-ADGroupMember</span> <span class="s">"Protected Users"</span> <span class="p">-Members</span> adm-ali
+<span class="c"># Windows LAPS: kompyuter OU siga ruxsat</span>
+<span class="k">Set-LapsADComputerSelfPermission</span> `
+   <span class="p">-Identity</span> <span class="s">"OU=Computers,OU=Toshkent,DC=uztech,DC=uz"</span>
+<span class="c"># Imtiyozli guruhlar auditi</span>
+<span class="k">Get-ADGroupMember</span> <span class="s">"Domain Admins"</span> <span class="p">-Recursive</span></pre>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 31. BEST PRACTICES ===================== -->
+<section class="slide">
+  <div class="tag">14 · Tavsiyalar</div>
+  <h2>Eng yaxshi amaliyotlar va keng tarqalgan xatolar</h2>
+  <div class="body row">
+    <div class="col card" style="border-top:4px solid var(--gr)">
+      <h3 style="color:#86efac">Toʻgʻri yondashuv</h3>
+      <ul style="font-size:15px">
+        <li>Oʻrmonlar va domenlar sonini <b>minimal</b> saqlash</li>
+        <li>Har domenda kamida <b>2 ta DC</b> (ishonchlilik)</li>
+        <li>Ommaviy domenning subdomeni: <code>ad.uztech.uz</code></li>
+        <li>Har bir subnetni saytga bogʻlash</li>
+        <li>OU ni <b>maʼmuriy model</b> asosida qurish, org-chart asosida emas</li>
+        <li>AD Recycle Bin ni yoqish, System State zaxira nusxasi</li>
+        <li>Nomlash standartini hujjatlashtirish</li>
+        <li>Virtual DC larda VM-GenerationID dan foydalanish</li>
+      </ul>
+    </div>
+    <div class="col card" style="border-top:4px solid var(--rd)">
+      <h3 style="color:#fca5a5">Xatolar</h3>
+      <ul style="font-size:15px">
+        <li><code>.local</code> yoki bir qismli nom (<code>UZTECH</code>) ishlatish</li>
+        <li>Har bir boʻlim uchun alohida domen yaratish</li>
+        <li>Domen chegarasini xavfsizlik chegarasi deb hisoblash</li>
+        <li>Infrastructure Master ni GC da qoldirish (koʻp domenli, hammasi GC boʻlmasa)</li>
+        <li>Schema Admins da doimiy aʼzolar</li>
+        <li>DC larni snapshotdan tiklash (USN rollback)</li>
+        <li>Saytsiz subnetlar » klient uzoqdagi DC ga ulanadi</li>
+        <li>DC da boshqa xizmatlar (web, fayl server) ishlatish</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 32. XULOSA ===================== -->
+<section class="slide">
+  <div class="tag">Xulosa</div>
+  <h2>Xulosa</h2>
+  <div class="body row" style="gap:18px;margin-top:28px">
+    <div class="card col" style="text-align:center;padding:26px 18px">
+      <svg width="90" height="76" viewBox="0 0 120 100"><use href="#tri3" width="120" height="100"/></svg>
+      <h3 style="margin-top:10px">Domen</h3><p class="mut" style="font-size:15px;margin:0">Maʼmuriy va replikatsiya birligi. Imkon qadar <b>bitta</b> domen + yaxshi oʻylangan OU.</p>
+    </div>
+    <div class="card col" style="text-align:center;padding:26px 18px">
+      <svg width="140" height="76" viewBox="0 0 180 100"><use href="#tri" x="50" y="0" width="80" height="66"/><use href="#tri" x="0" y="40" width="70" height="58"/><use href="#tri" x="110" y="40" width="70" height="58"/></svg>
+      <h3 style="margin-top:10px">Daraxt</h3><p class="mut" style="font-size:15px;margin:0">Uzluksiz DNS nomlar fazosi. Alohida <b>nom</b> va brend kerak boʻlganda yangi daraxt.</p>
+    </div>
+    <div class="card col" style="text-align:center;padding:26px 18px">
+      <svg width="140" height="76" viewBox="0 0 180 100"><ellipse cx="90" cy="50" rx="86" ry="46" fill="rgba(56,189,248,.1)" stroke="#38bdf8" stroke-dasharray="5 4"/><use href="#tri" x="30" y="18" width="60" height="50"/><use href="#tri2" x="95" y="18" width="60" height="50"/></svg>
+      <h3 style="margin-top:10px">Oʻrmon</h3><p class="mut" style="font-size:15px;margin:0">Yagona <b>xavfsizlik chegarasi</b>. Toʻliq izolyatsiya talab qilinsa — alohida oʻrmon.</p>
+    </div>
+  </div>
+  <div class="card" style="margin-top:22px;border-left:4px solid var(--cy)">
+    <p style="margin:0;font-size:17px">AD tuzilmasini loyihalash — <b>biznes talablaridan</b> boshlanadi: avval oʻrmon soni, soʻng domen modeli, DNS nomlari, OU va nihoyat saytlar aniqlanadi. Toʻgʻri dizayn boshqaruv xarajatini kamaytiradi, xavfsizlikni oshiradi va kelajakdagi oʻsishga moslashadi. Oʻrmon ildizi va DNS nomini keyinroq oʻzgartirish juda qiyin, shuning uchun bu qarorlar boshida puxta qabul qilinadi.</p>
+  </div>
+</section>
+
+<!-- ===================== 33. ADABIYOTLAR ===================== -->
+<section class="slide">
+  <div class="tag">Manbalar</div>
+  <h2>Foydalanilgan adabiyotlar</h2>
+  <div class="body">
+    <ol style="font-size:15.5px;line-height:1.75;padding-left:22px;color:#d6ddf5">
+      <li>Microsoft Learn. <i>Active Directory Domain Services Overview.</i> — learn.microsoft.com/windows-server/identity/ad-ds</li>
+      <li>Microsoft Learn. <i>Designing the Logical Structure (AD DS Design Guide).</i> — …/ad-ds/plan/designing-the-logical-structure</li>
+      <li>Microsoft Learn. <i>Active Directory Domain Services Functional Levels.</i> — …/ad-ds/active-directory-functional-levels</li>
+      <li>Microsoft Learn. <i>Database 32k pages for Active Directory on Windows Server.</i> — …/ad-ds/32k-pages-optional-feature</li>
+      <li>Microsoft Learn. <i>Securing Privileged Access — Enterprise Access Model.</i> — learn.microsoft.com/security/privileged-access-workstations</li>
+      <li>Microsoft Learn. <i>ActiveDirectory va ADDSDeployment PowerShell modullari.</i> — learn.microsoft.com/powershell/module/activedirectory</li>
+      <li>[MS-ADTS] <i>Active Directory Technical Specification.</i> Microsoft Open Specifications.</li>
+      <li>Desmond B., Richards J., Allen R., Lowe-Norris A. <i>Active Directory: Designing, Deploying, and Running AD</i>, 5th ed. — O’Reilly, 2013.</li>
+      <li>Francis D. <i>Mastering Active Directory</i>, 3rd ed. — Packt, 2021.</li>
+      <li>Microsoft Learn. <i>Windows Server 2025 — Whatʼs new in Active Directory Domain Services.</i></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ===================== 34. RAHMAT ===================== -->
+<section class="slide" data-nofoot>
+  <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">
+    <svg width="360" height="180" viewBox="0 0 360 180">
+      <use href="#tri2" x="20" y="70" width="110" height="92"/><use href="#tri" x="115" y="10" width="130" height="108" filter="url(#glow)"/><use href="#tri3" x="230" y="70" width="110" height="92"/>
+    </svg>
+    <h1 style="font-size:64px;margin:18px 0 10px"><span class="grad">Eʼtiboringiz uchun rahmat!</span></h1>
+    <p class="mut" style="font-size:22px;margin:0">Savollaringiz boʻlsa, marhamat</p>
+    <div style="margin-top:28px"><span class="pill">Domen</span><span class="pill v">Daraxt</span><span class="pill g">Oʻrmon</span><span class="pill a">Trust</span><span class="pill r">FSMO</span><span class="pill">OU</span></div>
+  </div>
+</section>
+
+</div><!-- /stage -->
+
+<div id="nav"><button onclick="go(cur-1)" title="Oldingi">‹</button><button onclick="go(cur+1)" title="Keyingi">›</button><button onclick="fs()" title="Toʻliq ekran">[ ]</button></div>
+<div id="help">‹ › boshqaruv · F — toʻliq ekran · Ctrl+P — PDF</div>
+
+<script>
+const slides=[...document.querySelectorAll('.slide')];
+const total=slides.length;
+slides.forEach((s,i)=>{
+  if(s.hasAttribute('data-nofoot'))return;
+  const f=document.createElement('div');f.className='foot';
+  f.innerHTML='<span><b>Windows Server boshqaruvi</b> · AD tuzilmasini loyihalash</span><span>'+(i+1)+' / '+total+'</span>';
+  s.appendChild(f);
+});
+let cur=0;
+function go(n){
+  n=Math.max(0,Math.min(total-1,n));
+  slides[cur].classList.remove('active');cur=n;slides[cur].classList.add('active');
+  document.getElementById('progress').style.width=((cur+1)/total*100)+'%';
+  history.replaceState(null,'','#'+(cur+1));
+}
+function fit(){
+  const s=Math.min(innerWidth/1280,innerHeight/720);
+  document.getElementById('stage').style.transform='translate(-50%,-50%) scale('+s+')';
+}
+function fs(){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen();}
+addEventListener('resize',fit);
+addEventListener('keydown',e=>{
+  if(['ArrowRight','PageDown',' ','Enter'].includes(e.key)){e.preventDefault();go(cur+1)}
+  else if(['ArrowLeft','PageUp','Backspace'].includes(e.key)){e.preventDefault();go(cur-1)}
+  else if(e.key==='Home')go(0);else if(e.key==='End')go(total-1);
+  else if(e.key==='f'||e.key==='F')fs();
+});
+let tx=null;
+addEventListener('touchstart',e=>tx=e.touches[0].clientX);
+addEventListener('touchend',e=>{if(tx===null)return;const d=e.changedTouches[0].clientX-tx;if(Math.abs(d)>50)go(cur+(d<0?1:-1));tx=null});
+fit();
+setTimeout(()=>{const e=document.getElementById('help');e.style.opacity=0;setTimeout(()=>e.remove(),1000)},5000);
+const h=parseInt(location.hash.slice(1));
+slides[0].classList.add('active');cur=0;go(isNaN(h)?0:h-1);
+</script>
+</body>
+</html>
