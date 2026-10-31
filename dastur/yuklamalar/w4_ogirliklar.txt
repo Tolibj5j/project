@@ -1,0 +1,14 @@
+# Og'irliklar bilan adolatli taqsimlash: dekan (og'irlik 2) 1 ta, ali 3 ta, vali 6 ta jarayon
+@weight dekan 2
+@weight ali   1
+@weight vali  1
+D1  dekan 0  1  200
+A1  ali   0  1  100
+A2  ali   0  1  100
+A3  ali   0  1  100
+V1  vali  0  1  100
+V2  vali  0  1  100
+V3  vali  0  1  100
+V4  vali  0  1  100
+V5  vali  0  1  100
+V6  vali  0  1  100

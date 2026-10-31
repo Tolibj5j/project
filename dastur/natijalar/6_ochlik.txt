@@ -1,0 +1,38 @@
+Algoritm: PRIO, kontekst almashtirish vaqti=0
+PID   Foyd.    Kelish   CPU  Tugash      T      W      R   Reak
+L1    vali          0     5      45     45     40     40     40
+H1    ali           0     4       4      4      0      0      0
+H2    ali           4     4       8      4      0      0      0
+H3    ali           8     4      12      4      0      0      0
+H4    ali          12     4      16      4      0      0      0
+H5    ali          16     4      20      4      0      0      0
+H6    ali          20     4      24      4      0      0      0
+H7    ali          24     4      28      4      0      0      0
+H8    ali          28     4      32      4      0      0      0
+H9    ali          32     4      36      4      0      0      0
+H10   ali          36     4      40      4      0      0      0
+         T_ort   W_ort   R_ort    Reak    CS   CPU%  Xar%     Ish
+O'rt.     7.73    3.64    3.64    3.64    10  100.0   0.0    45.0
+O'tkazuvchanlik: 0.244 jarayon/vaqt birligi
+Gant diagrammasi:
+|  H1 |  H2 |  H3 |  H4 |  H5 |  H6 |  H7 |  H8 |  H9 | H10 |  L1 |
+0     4     8     12    16    20    24    28    32    36    40    45
+Algoritm: PRIO, kontekst almashtirish vaqti=0
+PID   Foyd.    Kelish   CPU  Tugash      T      W      R   Reak
+L1    vali          0     5      25     25     20      8      8
+H1    ali           0     4       4      4      0      0      0
+H2    ali           4     4       8      4      0      0      0
+H3    ali           8     4      14      6      2      2      2
+H4    ali          12     4      18      6      2      2      2
+H5    ali          16     4      22      6      2      2      2
+H6    ali          20     4      29      9      5      5      5
+H7    ali          24     4      33      9      5      5      5
+H8    ali          28     4      37      9      5      5      5
+H9    ali          32     4      41      9      5      5      5
+H10   ali          36     4      45      9      5      5      5
+         T_ort   W_ort   R_ort    Reak    CS   CPU%  Xar%     Ish
+O'rt.     8.73    4.64    3.55    3.55    11  100.0   0.0    45.0
+O'tkazuvchanlik: 0.244 jarayon/vaqt birligi
+Gant diagrammasi:
+|  H1 |  H2 |  L1 |  H3 |  H4 |  H5 |  L1 |  H6 |  H7 |  H8 |  H9 | H10 |
+0     4     8     10    14    18    22    25    29    33    37    41    45

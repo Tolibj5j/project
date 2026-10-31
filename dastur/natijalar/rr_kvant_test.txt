@@ -1,0 +1,13 @@
+Kontekstni almashtirish vaqtini o'lchash (3 marta):
+takrorlash=200000 yadro=0 tizim_chaqiruvi=1.80 mks ping_pong=5.44 mks almashtirish=3.64 mks
+takrorlash=200000 yadro=0 tizim_chaqiruvi=1.80 mks ping_pong=5.44 mks almashtirish=3.64 mks
+takrorlash=200000 yadro=0 tizim_chaqiruvi=1.80 mks ping_pong=5.45 mks almashtirish=3.65 mks
+Yadro: 6.1.188-233.386.amzn2023.x86_64; bitta yadroda 3 ta jarayon, har biri 5 s
+Kvant      Almasht./s  Kutish_ort,ms  Kutish_max  CPU_band,%   Ish/CPU-s
+RR q=1             97          21.22        72.9        96.0       46095
+RR q=5             96          21.47        72.9        95.2       46167
+RR q=10            96          21.22        72.9        96.0       46097
+RR q=20            49          42.13        92.9        95.6       46077
+RR q=50            20         100.61       150.0        96.9       46111
+RR q=100           11         191.34       250.0        97.4       46178
+CFS               100          20.03        40.0       100.3       46102

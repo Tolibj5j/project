@@ -1,0 +1,6 @@
+# MLFQ tajribasi: 2 ta interaktiv (qisqa CPU davri + I/O) va 3 ta hisoblash jarayoni, ms
+I1  ali   0  1  1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1  9
+I2  vali  0  1  2,2,2,2,2,2,2,2,2,2,2,2,2,2,2  10
+C1  ali   0  1  300
+C2  vali  0  1  300
+C3  vali  0  1  300

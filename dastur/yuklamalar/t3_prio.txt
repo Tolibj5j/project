@@ -1,0 +1,6 @@
+# Tekshiruv testi 3 (Silberschatz, ustuvorlik misoli; kichik son - yuqori ustuvorlik)
+P1  ali  0  3  10
+P2  ali  0  1  1
+P3  ali  0  4  2
+P4  ali  0  5  1
+P5  ali  0  2  5

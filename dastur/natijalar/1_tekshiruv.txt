@@ -1,0 +1,47 @@
+Algoritm: FCFS, kontekst almashtirish vaqti=0
+PID   Foyd.    Kelish   CPU  Tugash      T      W      R   Reak
+P1    ali           0    24      24     24      0      0      0
+P2    ali           0     3      27     27     24     24     24
+P3    ali           0     3      30     30     27     27     27
+         T_ort   W_ort   R_ort    Reak    CS   CPU%  Xar%     Ish
+O'rt.    27.00   17.00   17.00   17.00     2  100.0   0.0    30.0
+O'tkazuvchanlik: 0.100 jarayon/vaqt birligi
+Gant diagrammasi:
+|  P1 |  P2 |  P3 |
+0     24    27    30
+Algoritm: RR, q=4, kontekst almashtirish vaqti=0
+PID   Foyd.    Kelish   CPU  Tugash      T      W      R   Reak
+P1    ali           0    24      30     30      6      0      0
+P2    ali           0     3       7      7      4      4      4
+P3    ali           0     3      10     10      7      7      7
+         T_ort   W_ort   R_ort    Reak    CS   CPU%  Xar%     Ish
+O'rt.    15.67    5.67    3.67    3.67     3  100.0   0.0    30.0
+O'tkazuvchanlik: 0.100 jarayon/vaqt birligi
+Gant diagrammasi:
+|  P1 |  P2 |  P3 |  P1 |
+0     4     7     10    30
+Algoritm: SJF, kontekst almashtirish vaqti=0
+PID   Foyd.    Kelish   CPU  Tugash      T      W      R   Reak
+P1    ali           0     6       9      9      3      3      3
+P2    ali           0     8      24     24     16     16     16
+P3    ali           0     7      16     16      9      9      9
+P4    ali           0     3       3      3      0      0      0
+         T_ort   W_ort   R_ort    Reak    CS   CPU%  Xar%     Ish
+O'rt.    13.00    7.00    7.00    7.00     3  100.0   0.0    24.0
+O'tkazuvchanlik: 0.167 jarayon/vaqt birligi
+Gant diagrammasi:
+|  P4 |  P1 |  P3 |  P2 |
+0     3     9     16    24
+Algoritm: PRIO, kontekst almashtirish vaqti=0
+PID   Foyd.    Kelish   CPU  Tugash      T      W      R   Reak
+P1    ali           0    10      16     16      6      6      6
+P2    ali           0     1       1      1      0      0      0
+P3    ali           0     2      18     18     16     16     16
+P4    ali           0     1      19     19     18     18     18
+P5    ali           0     5       6      6      1      1      1
+         T_ort   W_ort   R_ort    Reak    CS   CPU%  Xar%     Ish
+O'rt.    12.00    8.20    8.20    8.20     4  100.0   0.0    19.0
+O'tkazuvchanlik: 0.263 jarayon/vaqt birligi
+Gant diagrammasi:
+|  P2 |  P5 |  P1 |  P3 |  P4 |
+0     1     6     16    18    19

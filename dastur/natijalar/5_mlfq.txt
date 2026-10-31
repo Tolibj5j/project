@@ -1,0 +1,40 @@
+Algoritm: RR, q=20, kontekst almashtirish vaqti=0.1
+PID   Foyd.    Kelish   CPU  Tugash      T      W      R   Reak
+I1    ali           0    20  1000.4 1000.4  809.4   60.3  40.47
+I2    vali          0    30   952.4  952.4  782.4   61.4  52.16
+C1    ali           0   300     909    909    609      0      0
+C2    vali          0   300   929.1  929.1  629.1   20.1   20.1
+C3    vali          0   300   949.2  949.2  649.2   40.2   40.2
+         T_ort   W_ort   R_ort    Reak    CS   CPU%  Xar%     Ish
+O'rt.   948.02  695.82   36.40   30.59    75   95.0   0.7  1000.4
+O'tkazuvchanlik: 0.005 jarayon/vaqt birligi
+Algoritm: RR, q=4, kontekst almashtirish vaqti=0.1
+PID   Foyd.    Kelish   CPU  Tugash      T      W      R   Reak
+I1    ali           0    20     447    447    256   12.3   12.8
+I2    vali          0    30   347.2  347.2  177.2   13.4  11.81
+C1    ali           0   300   967.7  967.7  667.7      0      0
+C2    vali          0   300   971.8  971.8  671.8    4.1    4.1
+C3    vali          0   300   975.9  975.9  675.9    8.2    8.2
+         T_ort   W_ort   R_ort    Reak    CS   CPU%  Xar%     Ish
+O'rt.   741.92  489.72    7.60    7.38   259   97.3   2.7   975.9
+O'tkazuvchanlik: 0.005 jarayon/vaqt birligi
+Algoritm: MLFQ, q=4, kontekst almashtirish vaqti=0.1
+PID   Foyd.    Kelish   CPU  Tugash      T      W      R   Reak
+I1    ali           0    20   540.1  540.1  349.1   12.3  17.46
+I2    vali          0    30   558.3  558.3  388.3   13.4  25.89
+C1    ali           0   300   928.6  928.6  628.6      0      0
+C2    vali          0   300   944.7  944.7  644.7    4.1    4.1
+C3    vali          0   300   960.8  960.8  660.8    8.2    8.2
+         T_ort   W_ort   R_ort    Reak    CS   CPU%  Xar%     Ish
+O'rt.   786.50  534.30    7.60   11.13   108   98.9   1.1   960.8
+O'tkazuvchanlik: 0.005 jarayon/vaqt birligi
+Algoritm: MLFQ, q=4, kontekst almashtirish vaqti=0.1
+PID   Foyd.    Kelish   CPU  Tugash      T      W      R   Reak
+I1    ali           0    20   237.6  237.6   46.6   12.3   2.33
+I2    vali          0    30   246.3  246.3   76.3   13.4   5.09
+C1    ali           0   300   964.1  964.1  664.1      0      0
+C2    vali          0   300   802.1  802.1  502.1    4.1    4.1
+C3    vali          0   300     960    960    660    8.2    8.2
+         T_ort   W_ort   R_ort    Reak    CS   CPU%  Xar%     Ish
+O'rt.   642.02  389.82    7.60    3.94   141   98.5   1.5   964.1
+O'tkazuvchanlik: 0.005 jarayon/vaqt birligi

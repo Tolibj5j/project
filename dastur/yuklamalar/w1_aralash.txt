@@ -1,0 +1,7 @@
+# Asosiy taqqoslash yuklamasi: turli vaqtda keluvchi 6 ta jarayon, 2 foydalanuvchi
+P1  ali   0  3  8
+P2  ali   1  1  4
+P3  vali  2  4  9
+P4  vali  3  2  5
+P5  ali   4  5  2
+P6  vali  6  2  6

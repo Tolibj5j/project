@@ -1,0 +1,5 @@
+# Tekshiruv testi 2 (Silberschatz, SJF misoli)
+P1  ali  0  1  6
+P2  ali  0  1  8
+P3  ali  0  1  7
+P4  ali  0  1  3

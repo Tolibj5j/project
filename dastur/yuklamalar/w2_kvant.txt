@@ -1,0 +1,7 @@
+# Vaqt kvanti tajribasi (vaqt birligi - ms): 4 ta hisoblash va 2 ta interaktiv jarayon
+C1  ali   0   3  120
+C2  vali  0   3  80
+C3  vali  5   3  60
+C4  ali   10  3  100
+I1  ali   0   3  3,3,3,3,3,3,3,3,3,3  20
+I2  vali  15  3  2,2,2,2,2,2,2,2,2,2  25

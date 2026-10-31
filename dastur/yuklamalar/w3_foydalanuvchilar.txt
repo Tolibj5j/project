@@ -1,0 +1,11 @@
+# Adolatlilik tajribasi: ali 1 ta, vali 9 ta hisoblash jarayoni (Key va Lauder misoli)
+A1  ali   0  1  100
+B1  vali  0  1  100
+B2  vali  0  1  100
+B3  vali  0  1  100
+B4  vali  0  1  100
+B5  vali  0  1  100
+B6  vali  0  1  100
+B7  vali  0  1  100
+B8  vali  0  1  100
+B9  vali  0  1  100

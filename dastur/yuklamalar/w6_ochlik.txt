@@ -1,0 +1,12 @@
+# Ochlik tajribasi: past ustuvorlikdagi L va har 4 birlikda keluvchi 10 ta yuqori ustuvorlikdagi H
+L1   vali  0  5  5
+H1   ali   0  1  4
+H2   ali   4  1  4
+H3   ali   8  1  4
+H4   ali   12 1  4
+H5   ali   16 1  4
+H6   ali   20 1  4
+H7   ali   24 1  4
+H8   ali   28 1  4
+H9   ali   32 1  4
+H10  ali   36 1  4

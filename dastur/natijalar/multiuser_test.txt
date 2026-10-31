@@ -1,0 +1,61 @@
+Yadro: 6.1.188-233.386.amzn2023.x86_64, CPU yadrolari: 8, tajriba yadrosi: 0, davomiylik: 10 s
+Foydalanuvchilar: uid=1001(talaba_a) gid=1002(talaba_a) groups=1002(talaba_a); uid=1002(talaba_b) gid=1003(talaba_b) groups=1003(talaba_b)
+
+=== 1-tajriba. Standart CFS: talaba_a - 1 ta, talaba_b - 4 ta jarayon
+  talaba_a  pid=59      nice=0   cpu= 2.00s ulush= 20.0% nivcsw=201   kutish_ort=39.84ms
+  talaba_b  pid=58      nice=0   cpu= 1.99s ulush= 20.0% nivcsw=199   kutish_ort=40.14ms
+  talaba_b  pid=60      nice=0   cpu= 2.00s ulush= 20.0% nivcsw=199   kutish_ort=40.21ms
+  talaba_b  pid=61      nice=0   cpu= 2.00s ulush= 20.1% nivcsw=201   kutish_ort=39.84ms
+  talaba_b  pid=62      nice=0   cpu= 2.00s ulush= 20.0% nivcsw=201   kutish_ort=39.76ms
+  JAMI talaba_a  jarayonlar=1  CPU ulushi= 20.0%
+  JAMI talaba_b  jarayonlar=4  CPU ulushi= 80.1%
+
+=== 2-tajriba. nice: talaba_b jarayonlari nice=5 bilan
+  talaba_a  pid=74      nice=0   cpu= 4.32s ulush= 43.2% nivcsw=206   kutish_ort=28.27ms
+  talaba_b  pid=75      nice=5   cpu= 1.42s ulush= 14.2% nivcsw=142   kutish_ort=60.32ms
+  talaba_b  pid=76      nice=5   cpu= 1.42s ulush= 14.2% nivcsw=143   kutish_ort=60.38ms
+  talaba_b  pid=77      nice=5   cpu= 1.41s ulush= 14.2% nivcsw=142   kutish_ort=60.21ms
+  talaba_b  pid=78      nice=5   cpu= 1.42s ulush= 14.3% nivcsw=145   kutish_ort=59.82ms
+  JAMI talaba_a  jarayonlar=1  CPU ulushi= 43.2%
+  JAMI talaba_b  jarayonlar=4  CPU ulushi= 56.9%
+
+=== 3-tajriba. cgroup v2: har bir foydalanuvchi guruhi cpu.weight=100
+  talaba_a  pid=91      nice=0   cpu= 5.00s ulush= 50.0% nivcsw=254   kutish_ort=19.96ms
+  talaba_b  pid=90      nice=0   cpu= 1.25s ulush= 12.5% nivcsw=125   kutish_ort=69.90ms
+  talaba_b  pid=92      nice=0   cpu= 1.25s ulush= 12.6% nivcsw=125   kutish_ort=69.67ms
+  talaba_b  pid=93      nice=0   cpu= 1.25s ulush= 12.5% nivcsw=125   kutish_ort=69.83ms
+  talaba_b  pid=94      nice=0   cpu= 1.25s ulush= 12.6% nivcsw=125   kutish_ort=69.42ms
+  JAMI talaba_a  jarayonlar=1  CPU ulushi= 50.0%
+  JAMI talaba_b  jarayonlar=4  CPU ulushi= 50.2%
+
+=== 4-tajriba. cgroup v2: talaba_b guruhi uchun cpu.max="20000 100000" (20 %)
+  talaba_a  pid=107     nice=0   cpu= 7.99s ulush= 79.9% nivcsw=136   kutish_ort=19.74ms
+  talaba_b  pid=106     nice=0   cpu= 0.50s ulush=  5.0% nivcsw=50    kutish_ort=188.05ms
+  talaba_b  pid=108     nice=0   cpu= 0.50s ulush=  5.0% nivcsw=50    kutish_ort=188.85ms
+  talaba_b  pid=109     nice=0   cpu= 0.51s ulush=  5.1% nivcsw=51    kutish_ort=185.55ms
+  talaba_b  pid=110     nice=0   cpu= 0.50s ulush=  5.0% nivcsw=51    kutish_ort=189.84ms
+  JAMI talaba_a  jarayonlar=1  CPU ulushi= 79.9%
+  JAMI talaba_b  jarayonlar=4  CPU ulushi= 20.1%
+
+=== 5-tajriba. autogroup yoqilgan, har bir foydalanuvchi alohida seansda
+  talaba_a  pid=122     nice=0   cpu= 2.00s ulush= 20.0% nivcsw=199   kutish_ort=40.57ms
+  talaba_b  pid=123     nice=0   cpu= 2.00s ulush= 20.0% nivcsw=202   kutish_ort=39.83ms
+  talaba_b  pid=124     nice=0   cpu= 2.00s ulush= 20.1% nivcsw=200   kutish_ort=39.86ms
+  talaba_b  pid=125     nice=0   cpu= 2.00s ulush= 20.0% nivcsw=200   kutish_ort=40.01ms
+  talaba_b  pid=126     nice=0   cpu= 2.00s ulush= 20.0% nivcsw=200   kutish_ort=39.91ms
+  JAMI talaba_a  jarayonlar=1  CPU ulushi= 20.0%
+  JAMI talaba_b  jarayonlar=4  CPU ulushi= 80.1%
+
+=== 6-tajriba. Himoya mexanizmlari (talaba_b foydalanuvchisi nomidan)
+  drwx------. talaba_a talaba_a /home/talaba_a
+  -rw-------. talaba_a talaba_a /home/talaba_a/maxfiy.txt
+  $ cat /home/talaba_a/maxfiy.txt
+  cat: /home/talaba_a/maxfiy.txt: Permission denied
+  $ cat /etc/shadow
+  cat: /etc/shadow: Permission denied
+  $ kill 146   # talaba_a jarayoni
+  kill: sending signal to 146 failed: Operation not permitted
+  $ renice -n -5 -p $$
+  renice: failed to set priority for 153 (process ID): Permission denied
+  $ ulimit -u 20; python3 forktest.py   # 50 ta jarayon yaratishga urinish
+  yaratildi: 19 ta jarayon, keyingi fork() xatosi: Resource temporarily unavailable
